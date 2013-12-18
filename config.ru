@@ -1,2 +1,2 @@
-require './integrity_new'
+require './integrity'
 run Sinatra::Application
