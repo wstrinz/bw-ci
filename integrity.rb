@@ -1,6 +1,12 @@
 require 'rest-client'
 require 'sinatra'
 require 'haml'
+require 'omniauth'
+
+configure do
+  use Rack::Session::Cookie
+  use OmniAuth::Strategies::Developer
+end
 
 get '/repos' do
 	@build_script = "rake"
@@ -10,7 +16,9 @@ get '/repos' do
 end
 
 get '/bendyworks' do
-
+  # get oauth token
+  # go to github, get repos
+  # list repos
 end
 
 get '/' do

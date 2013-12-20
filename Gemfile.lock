@@ -3,7 +3,11 @@ GEM
   specs:
     haml (4.0.4)
       tilt
+    hashie (2.0.5)
     mime-types (1.23)
+    omniauth (1.1.4)
+      hashie (>= 1.2, < 3)
+      rack
     rack (1.4.5)
     rack-protection (1.5.1)
       rack
@@ -20,5 +24,6 @@ PLATFORMS
 
 DEPENDENCIES
   haml
+  omniauth
   rest-client
   sinatra
