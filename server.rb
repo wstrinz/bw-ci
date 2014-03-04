@@ -45,10 +45,12 @@ get '/' do
 end
 
 get '/auth/:provider/callback' do
+  content_type :json
   auth_hash = request.env['omniauth.auth']
   puts auth_hash
   session[:authenticated] = true
   session[:auth_hash] = auth_hash
+  puts auth_hash.to_json
 end
 
 get '/repositories' do
