@@ -4,6 +4,7 @@ require 'json'
 require 'haml'
 require 'omniauth'
 require 'omniauth-github'
+require 'github_api'
 
 
 helpers do
