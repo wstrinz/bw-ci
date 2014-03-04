@@ -25,8 +25,8 @@ function addRepo(repo){
 
 function getRepos(){
   $.get("/repositories", function(data){
+    $("#repo-list").html('')
     _.each(data, function(d){
-      $("#repo-list").html('')
       addRepo(d)
     })
   })

@@ -17,9 +17,9 @@ helpers do
     ]
   end
 
-  def repos
-    token = session[:auth_hash]["credentials"]["token"]
-    user = session[:auth_hash]["info"]["nickname"]
+  def repos(info_hash)
+    token = info_hash["credentials"]["token"]
+    user = info_hash["info"]["nickname"]
     g = Github.new(oauth_token: token)
 
     user_list = g.repos.list user
@@ -55,7 +55,7 @@ get '/' do
     authenticate!
   else
     @build_script = "rake"
-
+    @@info_hash = session[:auth_hash]
     haml :repos
   end
 end
@@ -72,7 +72,7 @@ end
 
 get '/repositories' do
   content_type :json
-  repos.to_json
+  repos(@@info_hash).to_json
 end
 
 post '/' do
