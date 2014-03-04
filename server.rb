@@ -9,13 +9,20 @@ require 'github_api'
 
 helpers do
   def sample_repos
-    [
+    JSON.parse(IO.read('dev_data/repos.json'))
+  end
+
+  def sample_auth_hash
+    {
+      "credentials" =>
+        {
+          "token" => "1234567"
+        },
+      "info" =>
       {
-        name: "sample",
-        url: "http://www.github.com/bendyworks/bw-poopdeck",
-        private: true
+        "nickname" => "github_name"
       }
-    ]
+    }
   end
 
   def repos(info_hash)
@@ -38,7 +45,13 @@ helpers do
   end
 
   def authenticate!
-    redirect '/auth/github'
+    if self.class.development?
+      session[:authenticated] = true
+      session[:auth_hash] = sample_auth_hash
+      redirect '/'
+    else
+      redirect '/auth/github'
+    end
   end
 end
 
@@ -77,7 +90,11 @@ end
 
 get '/repositories' do
   content_type :json
-  repos(@@info_hash).to_json
+  if self.class.development?
+    sample_repos.to_json
+  else
+    repos(@@info_hash).to_json
+  end
 end
 
 post '/' do
