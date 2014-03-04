@@ -46,9 +46,10 @@ end
 
 get '/auth/:provider/callback' do
   content_type :json
+  # this doesn't work yet. not sure how to get info out of the hash in sinatra yet
   auth_hash = request.env['omniauth.auth']
   puts auth_hash
-  session[:authenticated] = true
+  #session[:authenticated] = true
   session[:auth_hash] = auth_hash
   puts auth_hash.to_json
 end
