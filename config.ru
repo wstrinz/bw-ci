@@ -1,2 +1,2 @@
-require './integrity'
+require './server'
 run Sinatra::Application
