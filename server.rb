@@ -60,6 +60,10 @@ get '/' do
   end
 end
 
+get '/reauth' do
+  authenticate!
+end
+
 get '/auth/:provider/callback' do
   content_type :json
   # this doesn't work yet. not sure how to get info out of the hash in sinatra yet
