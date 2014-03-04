@@ -18,7 +18,22 @@ helpers do
   end
 
   def repos
+    token = session[:auth_hash]["credentials"]["token"]
+    user = session[:auth_hash]["info"]["nickname"]
+    g = Github.new(oauth_token: token)
 
+    user_list = g.repos.list user
+    user_repos = []
+    user_list.each_page{|p| p.each{|r| user_repos << r}}
+
+    org_list = g.repos.list org: 'bendyworks'
+    org_repos = []
+    org_list.each_page{|p| p.each{|r| org_repos << r}}
+
+    [
+      user_repos.map{|r| {name: r.name, url: 'placeholder'}},
+      org_repos.map{|r| {name: r.name, url: 'placeholder'}},
+    ].flatten
   end
 
   def authenticate!
@@ -29,7 +44,8 @@ end
 configure do
   use Rack::Session::Cookie
   use OmniAuth::Builder do
-    provider :github, ENV['GITHUB_KEY'], ENV['GITHUB_SECRET']
+    user_scopes = 'user,repo,read:repo_hook,write:repo_hook,admin:repo_hook,read:org'
+    provider :github, ENV['GITHUB_KEY'], ENV['GITHUB_SECRET'], scope: user_scopes
   end
   enable :sessions
 end
