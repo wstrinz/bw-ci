@@ -2,9 +2,12 @@ require 'rest-client'
 require 'sinatra'
 require 'json'
 require 'haml'
+require 'omniauth'
+require 'omniauth-github'
+
 
 helpers do
-  def repos
+  def sample_repos
     [
       {
         name: "sample",
@@ -13,12 +16,39 @@ helpers do
       }
     ]
   end
+
+  def repos
+
+  end
+
+  def authenticate!
+    redirect '/auth/github'
+  end
+end
+
+configure do
+  use Rack::Session::Cookie
+  use OmniAuth::Builder do
+    provider :github, ENV['GITHUB_KEY'], ENV['GITHUB_SECRET']
+  end
+  enable :sessions
 end
 
 get '/' do
-	@build_script = "rake"
+  unless session[:authenticated]
+    authenticate!
+  else
+    @build_script = "rake"
 
-	haml :repos
+    haml :repos
+  end
+end
+
+get '/auth/:provider/callback' do
+  auth_hash = request.env['omniauth.auth']
+  puts auth_hash
+  session[:authenticated] = true
+  session[:auth_hash] = auth_hash
 end
 
 get '/repositories' do
