@@ -12,27 +12,27 @@ helpers do
     JSON.parse(IO.read('dev_data/repos.json'))
   end
 
-  def sample_auth_hash
-    {
-      "credentials" =>
-      {
-        "token" => "1234567"
-      },
-      "info" =>
-      {
-        "nickname" => "github_name"
-      }
-    }
-  end
-
   def sample_oauth
     IO.read('dev_data/oauth_token')
   end
 
+  def sample_auth_hash
+    {
+      "credentials" =>
+      {
+        "token" => sample_oauth
+      },
+      "info" =>
+      {
+        "nickname" => "wstrinz"
+      }
+    }
+  end
+
   def repos(info_hash)
     token = info_hash["credentials"]["token"]
-    user = info_hash["info"]["nickname"]
     g = Octokit::Client.new(access_token: token)
+    user = g.user.login
     g.auto_paginate = true
 
     user_repos = g.repos(user)
@@ -108,11 +108,7 @@ end
 
 get '/repositories' do
   content_type :json
-  if self.class.development?
-    sample_repos.to_json
-  else
-    repos(@@info_hash).to_json
-  end
+  repos(@@info_hash).to_json
 end
 
 post '/' do
