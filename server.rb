@@ -28,8 +28,8 @@ helpers do
   def repos(info_hash)
     token = info_hash["credentials"]["token"]
     user = info_hash["info"]["nickname"]
-    g = Octokit::Client.new(oauth_token: token)
-    g.auto_paginate(true)
+    g = Octokit::Client.new(access_token: token)
+    g.auto_paginate = true
 
     user_repos = g.repos(user)
     #user_repos = []
