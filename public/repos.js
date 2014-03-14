@@ -4,8 +4,14 @@ function toggleRepo(repoId){
   index = parseInt(repoId)
   repo = repos[index]
   state = $("#onoffswitch-" + repoId).is(":checked")
+  if(state){
+    
+  }
+  else {
+  }
   alert("toggle " + repo.name + " (id " + index + ") to " + state)
 }
+
 
 function switchHtml(id, name){
   return name + '<div class="onoffswitch"> \

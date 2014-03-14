@@ -4,7 +4,7 @@ require 'json'
 require 'haml'
 require 'omniauth'
 require 'omniauth-github'
-require 'github_api'
+require 'octokit'
 
 
 helpers do
@@ -28,20 +28,34 @@ helpers do
   def repos(info_hash)
     token = info_hash["credentials"]["token"]
     user = info_hash["info"]["nickname"]
-    g = Github.new(oauth_token: token)
+    g = Octokit::Client.new(oauth_token: token)
+    g.auto_paginate(true)
 
-    user_list = g.repos.list user
-    user_repos = []
-    user_list.each_page{|p| p.each{|r| user_repos << r}}
+    user_repos = g.repos(user)
+    #user_repos = []
+    #user_list.each_page{|p| p.each{|r| user_repos << r}}
 
-    org_list = g.repos.list org: 'bendyworks'
-    org_repos = []
-    org_list.each_page{|p| p.each{|r| org_repos << r}}
+    org_repos = g.org_repos('bendyworks')
+    #org_repos = []
+    #org_list.each_page{|p| p.each{|r| org_repos << r}}
 
     [
       user_repos.map{|r| {name: r.name, url: 'placeholder'}},
       org_repos.map{|r| {name: r.name, url: 'placeholder'}},
     ].flatten
+  end
+
+  def test_config(info_hash, repo)
+    token = info_hash["credentials"]["token"]
+    #user = info_hash["info"]["nickname"]
+    g = Octokit::Client.new(oauth_token: token)
+
+    travis = GithubHelper.travis_hash(g, repo)
+    if travis
+      travis
+    else
+      raise "No Travis config found, others coming soon"
+    end
   end
 
   def authenticate!

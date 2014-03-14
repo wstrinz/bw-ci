@@ -1,0 +1,22 @@
+# Logfile created on 2014-03-14 16:31:32 -0500 by logger.rb/41954
+I, [2014-03-14T16:31:32.563334 #42581]  INFO -- : 0:  addressable (2.3.5) from /Users/willstrinz/.rvm/gems/ruby-2.0.0-p353/specifications/addressable-2.3.5.gemspec
+I, [2014-03-14T16:31:32.563706 #42581]  INFO -- : 0:  multipart-post (2.0.0) from /Users/willstrinz/.rvm/gems/ruby-2.0.0-p353/specifications/multipart-post-2.0.0.gemspec
+I, [2014-03-14T16:31:32.563953 #42581]  INFO -- : 0:  faraday (0.9.0) from /Users/willstrinz/.rvm/gems/ruby-2.0.0-p353/specifications/faraday-0.9.0.gemspec
+I, [2014-03-14T16:31:32.564190 #42581]  INFO -- : 0:  tilt (1.4.1) from /Users/willstrinz/.rvm/gems/ruby-2.0.0-p353/specifications/tilt-1.4.1.gemspec
+I, [2014-03-14T16:31:32.564422 #42581]  INFO -- : 0:  haml (4.0.4) from /Users/willstrinz/.rvm/gems/ruby-2.0.0-p353/specifications/haml-4.0.4.gemspec
+I, [2014-03-14T16:31:32.564647 #42581]  INFO -- : 0:  hashie (2.0.5) from /Users/willstrinz/.rvm/gems/ruby-2.0.0-p353/specifications/hashie-2.0.5.gemspec
+I, [2014-03-14T16:31:32.564890 #42581]  INFO -- : 0:  httpauth (0.2.1) from /Users/willstrinz/.rvm/gems/ruby-2.0.0-p353/specifications/httpauth-0.2.1.gemspec
+I, [2014-03-14T16:31:32.565113 #42581]  INFO -- : 0:  multi_json (1.8.4) from /Users/willstrinz/.rvm/gems/ruby-2.0.0-p353/specifications/multi_json-1.8.4.gemspec
+I, [2014-03-14T16:31:32.565292 #42581]  INFO -- : 0:  jwt (0.1.11) from /Users/willstrinz/.rvm/gems/ruby-2.0.0-p353/specifications/jwt-0.1.11.gemspec
+I, [2014-03-14T16:31:32.565477 #42581]  INFO -- : 0:  mime-types (1.23) from /Users/willstrinz/.rvm/gems/ruby-2.0.0-p353/specifications/mime-types-1.23.gemspec
+I, [2014-03-14T16:31:32.565675 #42581]  INFO -- : 0:  rack (1.4.5) from /Users/willstrinz/.rvm/gems/ruby-2.0.0-p353/specifications/rack-1.4.5.gemspec
+I, [2014-03-14T16:31:32.565883 #42581]  INFO -- : 0:  oauth2 (0.8.1) from /Users/willstrinz/.rvm/gems/ruby-2.0.0-p353/specifications/oauth2-0.8.1.gemspec
+I, [2014-03-14T16:31:32.566066 #42581]  INFO -- : 0:  sawyer (0.5.3) from /Users/willstrinz/.rvm/gems/ruby-2.0.0-p353/specifications/sawyer-0.5.3.gemspec
+I, [2014-03-14T16:31:32.566254 #42581]  INFO -- : 0:  octokit (2.7.2) from /Users/willstrinz/.rvm/gems/ruby-2.0.0-p353/specifications/octokit-2.7.2.gemspec
+I, [2014-03-14T16:31:32.566433 #42581]  INFO -- : 0:  omniauth (1.1.4) from /Users/willstrinz/.rvm/gems/ruby-2.0.0-p353/specifications/omniauth-1.1.4.gemspec
+I, [2014-03-14T16:31:32.566605 #42581]  INFO -- : 0:  omniauth-oauth2 (1.1.1) from /Users/willstrinz/.rvm/gems/ruby-2.0.0-p353/specifications/omniauth-oauth2-1.1.1.gemspec
+I, [2014-03-14T16:31:32.566777 #42581]  INFO -- : 0:  omniauth-github (1.1.1) from /Users/willstrinz/.rvm/gems/ruby-2.0.0-p353/specifications/omniauth-github-1.1.1.gemspec
+I, [2014-03-14T16:31:32.566980 #42581]  INFO -- : 0:  rack-protection (1.5.1) from /Users/willstrinz/.rvm/gems/ruby-2.0.0-p353/specifications/rack-protection-1.5.1.gemspec
+I, [2014-03-14T16:31:32.567177 #42581]  INFO -- : 0:  rest-client (1.6.7) from /Users/willstrinz/.rvm/gems/ruby-2.0.0-p353/specifications/rest-client-1.6.7.gemspec
+I, [2014-03-14T16:31:32.567380 #42581]  INFO -- : 0:  sinatra (1.4.4) from /Users/willstrinz/.rvm/gems/ruby-2.0.0-p353/specifications/sinatra-1.4.4.gemspec
+I, [2014-03-14T16:31:32.567546 #42581]  INFO -- : 0:  bundler (1.5.1) from /Users/willstrinz/.rvm/gems/ruby-2.0.0-p353@global/specifications/bundler-1.5.1.gemspec
