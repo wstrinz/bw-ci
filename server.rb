@@ -15,14 +15,18 @@ helpers do
   def sample_auth_hash
     {
       "credentials" =>
-        {
-          "token" => "1234567"
-        },
+      {
+        "token" => "1234567"
+      },
       "info" =>
       {
         "nickname" => "github_name"
       }
     }
+  end
+
+  def sample_oauth
+    IO.read('dev_data/oauth_token')
   end
 
   def repos(info_hash)
