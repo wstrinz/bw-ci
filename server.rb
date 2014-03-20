@@ -36,17 +36,17 @@ helpers do
     g.auto_paginate = true
 
     user_repos = g.repos(user)
-    #user_repos = []
-    #user_list.each_page{|p| p.each{|r| user_repos << r}}
 
     org_repos = g.org_repos('bendyworks')
-    #org_repos = []
-    #org_list.each_page{|p| p.each{|r| org_repos << r}}
 
     [
-      user_repos.map{|r| {name: r.name, url: 'placeholder'}},
-      org_repos.map{|r| {name: r.name, url: 'placeholder'}},
+      user_repos.map{|r| {name: r.name, url: "https://www.github.com/#{r.full_name}"}},
+      org_repos.map{|r| {name: r.name, url: "https://www.github.com/#{r.full_name}"}},
     ].flatten
+  end
+
+  def jenkins_repos
+    [{name: "bw_poopdeck"}]
   end
 
   def test_config(info_hash, repo)
@@ -62,11 +62,16 @@ helpers do
     end
   end
 
+  def ensure_authenticated
+    unless session[:authenticated]
+      authenticate!
+    end
+  end
+
   def authenticate!
-    if self.class.development?
+    unless self.class.production?
       session[:authenticated] = true
       session[:auth_hash] = sample_auth_hash
-      redirect '/'
     else
       redirect '/auth/github'
     end
@@ -83,17 +88,14 @@ configure do
 end
 
 get '/' do
-  unless session[:authenticated]
-    authenticate!
-  else
-    @build_script = "rake"
-    @@info_hash = session[:auth_hash]
-    haml :repos
-  end
+  ensure_authenticated
+  @build_script = "rake"
+  haml :repos
 end
 
 get '/reauth' do
   authenticate!
+  redirect '/'
 end
 
 get '/auth/:provider/callback' do
@@ -107,8 +109,19 @@ get '/auth/:provider/callback' do
 end
 
 get '/repositories' do
+  ensure_authenticated
   content_type :json
-  repos(@@info_hash).to_json
+  repos(session[:auth_hash]).to_json
+end
+
+get '/enabled_repositories' do
+  ensure_authenticated
+  content_type :json
+  jenkins_repos.to_json
+end
+
+get '/travis_config' do
+  ensure_authenticated
 end
 
 post '/' do
