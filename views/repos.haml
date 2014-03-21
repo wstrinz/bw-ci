@@ -2,7 +2,7 @@
   %script{src: 'repos.js', type: 'text/javascript'}
   %link{:rel => :stylesheet, :type => :"text/css", :href => "repos.css"}
 %body
-  %h3 Hello
+  %h3 Repositories for #{@user}
   %form{action: '/repos', method: 'post', id: 'repoform'}
     Build Script:
     %textarea{form: 'repoform', name: 'script', cols: "40"}

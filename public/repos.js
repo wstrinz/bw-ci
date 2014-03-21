@@ -5,12 +5,19 @@ function toggleRepo(repoId){
   repo = repos[index]
   state = $("#onoffswitch-" + repoId).is(":checked")
   if(state){
+    showConfiguration(repo)
   }
-  else {
+  else{
+    confirmDisable(repo)
   }
   alert("toggle " + repo.name + " (id " + index + ") to " + state)
 }
 
+function showConfiguration(repo){
+}
+
+function confirmDisable(repo){
+}
 
 function switchHtml(id, name){
   return name + '<div class="onoffswitch"> \

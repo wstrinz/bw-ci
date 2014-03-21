@@ -44,8 +44,12 @@ helpers do
     end
   end
 
+  def authenticated?
+    session[:authenticated]
+  end
+
   def ensure_authenticated
-    unless session[:authenticated]
+    unless authenticated?
       authenticate!
     end
   end
@@ -70,9 +74,13 @@ configure do
 end
 
 get '/' do
-  ensure_authenticated
-  @build_script = "rake"
-  haml :repos
+  if authenticated?
+    @build_script = "rake"
+    @user = session[:auth_hash]["info"]["nickname"]
+    haml :repos
+  else
+    haml :login
+  end
 end
 
 get '/reauth' do
