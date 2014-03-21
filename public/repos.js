@@ -48,10 +48,6 @@ function getRepos(){
   })
 }
 
-function setRepoStates(){
-}
-
 $(document).ready( function(){
   getRepos();
-  setRepoStates();
 } )
