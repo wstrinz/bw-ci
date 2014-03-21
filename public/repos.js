@@ -5,7 +5,6 @@ function toggleRepo(repoId){
   repo = repos[index]
   state = $("#onoffswitch-" + repoId).is(":checked")
   if(state){
-    
   }
   else {
   }
@@ -25,6 +24,7 @@ function switchHtml(id, name){
 
 function addRepo(repo){
   var index = repos.length
+  repo.id = index
   repos.push(repo)
   $("#repo-list").append(switchHtml(index, repo.name))
 }
@@ -35,9 +35,23 @@ function getRepos(){
     _.each(data, function(d){
       addRepo(d)
     })
+
+    enabled_repos = []
+    $.get("/enabled_repositories", function(data) {
+      _.each(data, function(d){ console.log(d.url); enabled_repos.push(d.url) })
+
+      _.each(repos, function(r){
+        if(_.contains(enabled_repos, r.url))
+          $("#onoffswitch-" + r.id).trigger("click")
+      })
+    })
   })
+}
+
+function setRepoStates(){
 }
 
 $(document).ready( function(){
   getRepos();
+  setRepoStates();
 } )

@@ -30,8 +30,15 @@ class GithubHelper
       org_repos = g.org_repos('bendyworks')
 
       [
-        user_repos.map{|r| {name: r.name, url: "https://www.github.com/#{r.full_name}"}},
-        org_repos.map{|r| {name: r.name, url: "https://www.github.com/#{r.full_name}"}},
+        user_repos.map{ |r|
+          { name: r.name,
+            url: "https://github.com/#{r.full_name}/" }
+        }.sort_by{|r| r[:name].downcase},
+
+        org_repos.map{|r|
+          { name: r.name,
+            url: "https://github.com/#{r.full_name}/" }
+        }.sort_by{|r| r[:name].downcase},
       ].flatten
     end
   end

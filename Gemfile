@@ -6,6 +6,7 @@ gem 'omniauth'
 gem 'omniauth-github'
 gem 'octokit'
 gem 'jenkins_api_client'
+gem 'active_support'
 
 group :test do
   gem "vcr"
