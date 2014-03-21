@@ -62,6 +62,11 @@ helpers do
       redirect '/auth/github'
     end
   end
+
+  def logout!
+    session[:authenticated] = false
+    session[:auth_hash] = nil
+  end
 end
 
 configure do
@@ -81,6 +86,11 @@ get '/' do
   else
     haml :login
   end
+end
+
+get '/logout' do
+  logout!
+  redirect '/'
 end
 
 get '/reauth' do
