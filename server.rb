@@ -6,6 +6,8 @@ require 'omniauth'
 require 'omniauth-github'
 require 'octokit'
 
+require_relative 'github_helper.rb'
+
 
 helpers do
   def sample_repos
@@ -17,44 +19,20 @@ helpers do
   end
 
   def sample_auth_hash
-    {
-      "credentials" =>
-      {
-        "token" => sample_oauth
-      },
-      "info" =>
-      {
-        "nickname" => "wstrinz"
-      }
-    }
+    { "credentials" => { "token"    => sample_oauth },
+      "info"        => { "nickname" => "wstrinz"    } }
   end
 
   def repos(info_hash)
-    token = info_hash["credentials"]["token"]
-    g = Octokit::Client.new(access_token: token)
-    user = g.user.login
-    g.auto_paginate = true
-
-    user_repos = g.repos(user)
-
-    org_repos = g.org_repos('bendyworks')
-
-    [
-      user_repos.map{|r| {name: r.name, url: "https://www.github.com/#{r.full_name}"}},
-      org_repos.map{|r| {name: r.name, url: "https://www.github.com/#{r.full_name}"}},
-    ].flatten
+    GithubHelper.repos(info_hash)
   end
 
   def jenkins_repos
     [{name: "bw_poopdeck"}]
   end
 
-  def test_config(info_hash, repo)
-    token = info_hash["credentials"]["token"]
-    #user = info_hash["info"]["nickname"]
-    g = Octokit::Client.new(oauth_token: token)
-
-    travis = GithubHelper.travis_hash(g, repo)
+  def test_config(info_hash, user, repo)
+    travis = GithubHelper.travis_hash(info_hash, user, repo)
     if travis
       travis
     else
@@ -120,8 +98,10 @@ get '/enabled_repositories' do
   jenkins_repos.to_json
 end
 
-get '/travis_config' do
+get '/test_config/:user/:repo' do
   ensure_authenticated
+  content_type :json
+  test_config(session[:auth_hash], params[:user], params[:repo]).to_json
 end
 
 post '/' do
