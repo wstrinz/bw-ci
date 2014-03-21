@@ -4,7 +4,6 @@ require 'json'
 require 'haml'
 require 'omniauth'
 require 'omniauth-github'
-require 'octokit'
 
 require_relative 'github_helper.rb'
 require_relative 'jenkins_helper.rb'
@@ -16,7 +15,11 @@ helpers do
   end
 
   def sample_oauth
-    IO.read('dev_data/oauth_token')
+    if File.exist? "dev_data/oauth_token"
+      IO.read('dev_data/oauth_token')
+    else
+      ENV["OAUTH_TOKEN"]
+    end
   end
 
   def sample_auth_hash
@@ -79,7 +82,7 @@ end
 
 get '/auth/:provider/callback' do
   content_type :json
-  # this doesn't work yet. not sure how to get info out of the hash in sinatra yet
+
   auth_hash = request.env['omniauth.auth']
   puts auth_hash
   session[:authenticated] = true
