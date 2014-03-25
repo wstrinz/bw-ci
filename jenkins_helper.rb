@@ -27,8 +27,7 @@ class JenkinsHelper
     def build_config(job)
       doc = Nokogiri::XML(client.job.get_config(job))
       script = doc.at_css("builders").at_css("command").children.first.text
-      script.slice!(JenkinsConfig.script_boilerplate)
-      script
+      script.sub(JenkinsConfig.script_boilerplate,"")
     end
 
     def jenkins_repos
