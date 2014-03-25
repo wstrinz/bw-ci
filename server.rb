@@ -16,7 +16,7 @@ helpers do
 
   def sample_oauth
     if File.exist? "dev_data/oauth_token"
-      IO.read('dev_data/oauth_token')
+      IO.read('dev_data/oauth_token').strip
     else
       ENV["OAUTH_TOKEN"]
     end
@@ -38,9 +38,10 @@ helpers do
   def test_config(info_hash, user, repo)
     travis = GithubHelper.travis_hash(info_hash, user, repo)
     if travis
-      travis
+      { type: "travis", config: travis }
     else
-      raise "No Travis config found, others coming soon"
+      { type: "none" }
+      #raise "No Travis config found, others coming soon"
     end
   end
 
@@ -86,6 +87,10 @@ get '/' do
   else
     haml :login
   end
+end
+
+get '/repos' do
+  redirect '/'
 end
 
 get '/logout' do

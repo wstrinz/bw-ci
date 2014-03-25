@@ -35,7 +35,7 @@ describe "bw-ci app" do
   end
 
   describe "/test_config", :vcr do
-    let(:expected_config) { {"language"=>"ruby", "rvm"=>["1.9.3", "2.0.0", "jruby-19mode"]} }
+    let(:expected_config) { { "type" => "travis", "config" => {"language"=>"ruby", "rvm"=>["1.9.3", "2.0.0", "jruby-19mode"]} } }
 
     it "retrieves test config from a given repository" do
       get "/test_config/wstrinz/publisci"

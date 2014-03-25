@@ -4,11 +4,14 @@ require 'octokit'
 
 class GithubHelper
   class << self
+    def gh_client(token)
+      Octokit::Client.new(access_token: token)
+    end
+
     def travis_hash(info_hash, user, repo)
 
-      token = info_hash["credentials"]["token"]
-      #user = info_hash["info"]["nickname"]
-      client = Octokit::Client.new(oauth_token: token)
+      client = gh_client(info_hash["credentials"]["token"])
+      client.auto_paginate = true
 
       begin
         travis_file = client.contents(user + "/" + repo, path: ".travis.yml")
@@ -20,8 +23,7 @@ class GithubHelper
     end
 
     def repos(info_hash)
-      token = info_hash["credentials"]["token"]
-      g = Octokit::Client.new(access_token: token)
+      g = gh_client(info_hash["credentials"]["token"])
       user = g.user.login
       g.auto_paginate = true
 
@@ -32,11 +34,13 @@ class GithubHelper
       [
         user_repos.map{ |r|
           { name: r.name,
+            owner: r.owner.login,
             url: "https://github.com/#{r.full_name}/" }
         }.sort_by{|r| r[:name].downcase},
 
         org_repos.map{|r|
           { name: r.name,
+            owner: r.owner.login,
             url: "https://github.com/#{r.full_name}/" }
         }.sort_by{|r| r[:name].downcase},
       ].flatten

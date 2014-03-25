@@ -10,21 +10,38 @@ function toggleRepo(repoId){
   else{
     disableRepo(repo)
   }
-  console.log("toggle " + repo.name + " (id " + index + ") to " + state)
 }
 
 function enableRepo(repo){
   div = $("#onoffswitch-" + repo.id).parent().parent().children(".repo-config-box")
-  console.log(div)
   div.css("display","inline-block")
 }
 
 function disableRepo(repo){
-  $("#onoffswitch-" + repo.id).parent().parent().children(".repo-config-box")
-  .hide()
+  div = $("#onoffswitch-" + repo.id).parent().parent().children(".repo-config-box")
+  div.hide()
 }
 
 function confirmDisable(repo){
+}
+
+function retrieveBuildScript(el){
+  $(el).text("Loading...")
+  repo_node = el.parentNode.parentNode.parentNode ;
+  id = parseInt(repo_node.id.substring(4, repo_node.id.length)) ;
+  repo = repos[id] ;
+  $.get('/test_config/'+ repo.owner + '/' + repo.name, function(data){
+    if(data.type == "none"){
+      $(el).text("No Build Script Found")
+    }
+    else {
+      console.log(data)
+      $(el).text("Found build script for: " + data.type)
+      if(data.config.script){
+        $(el).parent().find(".build-script").text(data.config.script)
+      }
+    }
+  })
 }
 
 function configHtml(){
@@ -35,14 +52,15 @@ function configHtml(){
               <br/> \
               <textarea class="build-script" cols="50" rows="15"></textarea> \
               <br/> \
-              <button class="retrieve-build-script">Get Build Script From Repository</button> \
+              <button type="button" class="retrieve-build-script" onclick=retrieveBuildScript(this)>Get Build Script From Repository</button> \
               <br/> \
-              <button class="save-changes">Save</button> \
+              <button type="button" class="save-changes">Save</button> \
             </div> \
           </div>'
 }
+
 function switchHtml(id, name){
-  return name + '<div class="repo"> \
+  return name + '<div class="repo" id="repo' + id + '"> \
     <div class="onoffswitch"> \
       <input type="checkbox" id="onoffswitch-' + id + '" onclick=toggleRepo(' + id + ') name="onoffswitch" class="onoffswitch-checkbox"> \
       <label class="onoffswitch-label" for="onoffswitch-' + id + '"> \
@@ -69,7 +87,7 @@ function getRepos(){
 
     enabled_repos = []
     $.get("/enabled_repositories", function(data) {
-      _.each(data, function(d){ console.log(d.url); enabled_repos.push(d.url) })
+      _.each(data, function(d){ enabled_repos.push(d.url) })
 
       _.each(repos, function(r){
         if(_.contains(enabled_repos, r.url))

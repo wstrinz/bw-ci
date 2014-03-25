@@ -17,7 +17,7 @@
 }
 .retrieve-build-script {
   margin-top: 0.5em;
-  margin-left: 6.25em;
+  float: right;
   font-size: 1em;
 }
 .save-changes {

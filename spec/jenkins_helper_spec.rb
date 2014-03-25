@@ -26,17 +26,11 @@ describe JenkinsConfig, :vcr do
     let(:config) { JenkinsConfig.new(options) }
 
     before do
-      begin
-        JenkinsHelper.client.job.delete(config.job_name)
-      rescue
-      end
+      JenkinsHelper.client.job.delete(config.job_name) rescue nil
     end
 
     after do
-      begin
-        JenkinsHelper.client.job.delete(config.job_name)
-      rescue
-      end
+      JenkinsHelper.client.job.delete(config.job_name) rescue nil
     end
 
     it do
