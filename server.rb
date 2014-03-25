@@ -65,8 +65,7 @@ helpers do
   end
 
   def logout!
-    session[:authenticated] = false
-    session[:auth_hash] = nil
+    session.clear
   end
 end
 
