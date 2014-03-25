@@ -3,8 +3,16 @@ require 'active_support/core_ext'
 
 class JenkinsHelper
   class << self
-    def github_repo(jenkins_client, project)
-      cfg = Hash.from_xml(jenkins_client.job.get_config(project))
+    def client
+      @client ||= JenkinsApi::Client.new( server_url: ENV['JENKINS_URL'],
+                              username:   ENV["JENKINS_USER"],
+                              password:   ENV["JENKINS_KEY"] )
+      @client.logger.level = 4
+      @client
+    end
+
+    def github_repo(project)
+      cfg = Hash.from_xml(client.job.get_config(project))
 
       if cfg["project"]["properties"] && cfg["project"]["properties"]["com.coravy.hudson.plugins.github.GithubProjectProperty"]
         url = cfg["project"]["properties"]["com.coravy.hudson.plugins.github.GithubProjectProperty"]["projectUrl"]
@@ -16,9 +24,17 @@ class JenkinsHelper
     end
 
     def jenkins_repos
-      cl = JenkinsApi::Client.new(server_url: ENV['JENKINS_URL'], username: ENV["JENKINS_USER"], password: ENV["JENKINS_KEY"])
-      cl.logger.level = 4
-      cl.job.list_all.map { |job| github_repo(cl, job) }.compact
+      client.job.list_all.map { |job| github_repo(job) }.compact
+    end
+
+    def create_job(config)
+      if config.is_a? Hash
+        config = JenkinsConfig.new(config)
+      end
+
+      raise "Instance of JenkinsConfig required to create a new job" unless config.is_a? JenkinsConfig
+
+      client.job.create(config.job_name, config.to_xml)
     end
   end
 end
@@ -27,49 +43,57 @@ class JenkinsConfig
 
   class << self
     def project_template
-      xml_string = IO.read(File.Dirname(__FILE__) + "/jenkins_templates/default.xml")
+      xml_string = IO.read(File.dirname(__FILE__) + "/jenkins_templates/default.xml")
       # create nokogiri document
       Nokogiri::XML(xml_string)
     end
   end
 
-  class MissingAttr < StandardError; end
+  class MissingAttrError < StandardError; end
 
-  REQUIRED_ATTRS      = [:project_name, :github_repo]
+  REQUIRED_ATTRS      = [:job_name, :github_repo]
   OPTIONAL_ATTRS      = [:build_script, :project_url]
   ATTRS_WITH_DEFAULTS = []
 
   SCRIPT_BOILERPLATE = <<-EOF
 #!/bin/bash -l
 source /var/lib/jenkins/.bashrc
-  EOF
+EOF
 
+  attr_accessor :config_document
   [REQUIRED_ATTRS, OPTIONAL_ATTRS].flatten.each { |a| attr_reader a }
 
   def initialize(options = {})
-    [REQUIRED_ATTRS, ATTRS_WITH_DEFAULTS, OPTIONAL_ATTRS].each do |a|
+    self.config_document = self.class.project_template
+
+    all_attrs.each do |a|
       if options[a]
-        self.send(:"#{a}=", options[:a])
+        self.send(:"#{a}=", options[a])
       end
     end
 
-    @config_document = self.class.project_template
+  end
+
+  def all_attrs
+    [REQUIRED_ATTRS, ATTRS_WITH_DEFAULTS, OPTIONAL_ATTRS].flatten
   end
 
   def validate!
     REQUIRED_ATTRS.each do |a|
-      raise MissingAttr, "Required attribute #{a} is missing" unless self.send(a)
+      raise MissingAttrError, "Required attribute #{a} is missing" unless self.send(a)
     end
+
+    true
   end
 
   def to_xml
     validate!
-    project_url = "http://github.com/#{github_repo}" unless project_url
-    @config_document.to_xml
+    self.project_url = "http://github.com/#{github_repo}" unless project_url
+    config_document.to_xml
   end
 
-  def project_name=(name)
-    @project_name = name
+  def job_name=(name)
+    @job_name = name
   end
 
   def github_repo=(repo)
@@ -80,12 +104,12 @@ source /var/lib/jenkins/.bashrc
 
   def project_url=(url)
     @project_url = url
-    @config_document.at_css("projectUrl").children.first.content = url
+    config_document.at_css("projectUrl").children.first.content = url
   end
 
   def build_script=(script)
     @build_script = script
-    node = @config_document.at_css("builders").at_css("command").children.first
-    node.content = SCRIPT_BOILERPLATE + "\n" + script
+    node = config_document.at_css("builders").at_css("command").children.first
+    node.content = SCRIPT_BOILERPLATE + script
   end
 end
