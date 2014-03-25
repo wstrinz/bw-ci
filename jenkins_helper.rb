@@ -11,16 +11,24 @@ class JenkinsHelper
       @client
     end
 
-    def github_repo(project)
-      cfg = Hash.from_xml(client.job.get_config(project))
+    def github_repo(job)
+      cfg = Hash.from_xml(client.job.get_config(job))
 
       if cfg["project"]["properties"] && cfg["project"]["properties"]["com.coravy.hudson.plugins.github.GithubProjectProperty"]
         url = cfg["project"]["properties"]["com.coravy.hudson.plugins.github.GithubProjectProperty"]["projectUrl"]
 
-        { user: url.split("/")[-2],
+        { job:  job,
+          user: url.split("/")[-2],
           name: url.split("/")[-1],
           url: url }
       end
+    end
+
+    def build_config(job)
+      doc = Nokogiri::XML(client.job.get_config(job))
+      script = doc.at_css("builders").at_css("command").children.first.text
+      script.slice!(JenkinsConfig.script_boilerplate)
+      script
     end
 
     def jenkins_repos
@@ -36,18 +44,16 @@ class JenkinsHelper
 
       client.job.create(config.job_name, config.to_xml)
     end
+
+    def job_for_repo(user, repo)
+      job = jenkins_repos.find{|r| r[:user] == user && r[:name] == repo}
+      job[:job] if job
+    end
   end
 end
 
 class JenkinsConfig
 
-  class << self
-    def project_template
-      xml_string = IO.read(File.dirname(__FILE__) + "/jenkins_templates/default.xml")
-      # create nokogiri document
-      Nokogiri::XML(xml_string)
-    end
-  end
 
   class MissingAttrError < StandardError; end
 
@@ -62,6 +68,18 @@ EOF
 
   attr_accessor :config_document
   [REQUIRED_ATTRS, OPTIONAL_ATTRS].flatten.each { |a| attr_reader a }
+
+  class << self
+    def project_template
+      xml_string = IO.read(File.dirname(__FILE__) + "/jenkins_templates/default.xml")
+      # create nokogiri document
+      Nokogiri::XML(xml_string)
+    end
+
+    def script_boilerplate
+      SCRIPT_BOILERPLATE
+    end
+  end
 
   def initialize(options = {})
     self.config_document = self.class.project_template

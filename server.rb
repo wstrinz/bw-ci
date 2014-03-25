@@ -36,12 +36,18 @@ helpers do
   end
 
   def test_config(info_hash, user, repo)
-    travis = GithubHelper.travis_hash(info_hash, user, repo)
-    if travis
-      { type: "travis", config: travis }
+    job = JenkinsHelper.job_for_repo(user, repo)
+    if job
+      { type: 'jenkins',
+        config: { script: JenkinsHelper.build_config(job) } }
     else
-      { type: "none" }
-      #raise "No Travis config found, others coming soon"
+      travis = GithubHelper.travis_hash(info_hash, user, repo)
+      if travis
+        { type: "travis", config: travis }
+      else
+        { type: "none" }
+        #raise "No Travis config found, others coming soon"
+      end
     end
   end
 

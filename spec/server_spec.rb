@@ -45,9 +45,10 @@ describe "bw-ci app" do
   end
 
   describe '/enabled_repositories', :vcr do
-    let(:expected_repos) { [{ "user"=>"bendyworks",
-                              "name"=>"bw_poopdeck",
-                              "url"=>"https://github.com/bendyworks/bw_poopdeck/" }] }
+    let(:expected_repos) { [{ "job"   => "Poopdeck",
+                              "user"  => "bendyworks",
+                              "name"  => "bw_poopdeck",
+                              "url"   => "https://github.com/bendyworks/bw_poopdeck/" }] }
 
     it "retrieves known repos from jenkins" do
       get "/enabled_repositories"

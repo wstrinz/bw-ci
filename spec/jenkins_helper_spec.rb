@@ -6,8 +6,21 @@ describe JenkinsHelper, :vcr do
     it "returns repo data"
   end
 
-  describe ".jenkins_repo" do
+  describe ".jenkins_repos" do
     it "returns list of enabled repos"
+  end
+
+  describe ".job_for_repo" do
+    it "returns jenkins job name for a given repo" do
+      JenkinsHelper.job_for_repo('bendyworks', 'bw_poopdeck').should == "Poopdeck"
+    end
+  end
+
+  describe ".build_config" do
+    let(:expected) { "rvm use 2.0.0\ncp config/credentials.yml.example config/credentials.yml\ncp config/database.yml.example config/database.yml\nbundle\nbundle exec rake" }
+    it "returns build_config for a given job" do
+      JenkinsHelper.build_config("Poopdeck").should == expected
+    end
   end
 end
 
