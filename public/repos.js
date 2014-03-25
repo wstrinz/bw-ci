@@ -15,6 +15,7 @@ function toggleRepo(repoId){
 function enableRepo(repo){
   div = $("#onoffswitch-" + repo.id).parent().parent().children(".repo-config-box")
   div.css("display","inline-block")
+  retrieveBuildScript(repo)
 }
 
 function disableRepo(repo){
@@ -25,23 +26,28 @@ function disableRepo(repo){
 function confirmDisable(repo){
 }
 
-function retrieveBuildScript(el){
-  $(el).text("Loading...")
-  repo_node = el.parentNode.parentNode.parentNode ;
-  id = parseInt(repo_node.id.substring(4, repo_node.id.length)) ;
-  repo = repos[id] ;
+function retrieveBuildScript(repo){
+  refresh_button = $("#repo" + repo.id).find(".refresh-build-script")
   $.get('/test_config/'+ repo.owner + '/' + repo.name, function(data){
     if(data.type == "none"){
-      $(el).text("No Build Script Found")
+      refresh_button.text("No Build Script Found")
     }
     else {
       console.log(data)
-      $(el).text("Found build script for: " + data.type)
+      refresh_button.text("Found build script for: " + data.type)
       if(data.config.script){
-        $(el).parent().find(".build-script").text(data.config.script)
+        $("#repo" + repo.id).find(".build-script").text(data.config.script)
       }
     }
   })
+}
+
+function refreshBuildScript(el){
+  repo_node = el.parentNode.parentNode.parentNode ;
+  id = parseInt(repo_node.id.substring(4, repo_node.id.length)) ;
+  repo = repos[id] ;
+
+  retrieveBuildScript(repo)
 }
 
 function configHtml(){
@@ -52,7 +58,7 @@ function configHtml(){
               <br/> \
               <textarea class="build-script" cols="50" rows="15"></textarea> \
               <br/> \
-              <button type="button" class="retrieve-build-script" onclick=retrieveBuildScript(this)>Get Build Script From Repository</button> \
+              <button type="button" class="refresh-build-script" onclick=refreshBuildScript(this)>Get Build Script From Repository</button> \
               <br/> \
               <button type="button" class="save-changes">Save</button> \
             </div> \
