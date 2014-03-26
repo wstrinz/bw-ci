@@ -76,12 +76,12 @@ helpers do
 end
 
 configure do
-  use Rack::Session::Cookie
   use OmniAuth::Builder do
     user_scopes = 'user,repo,read:repo_hook,write:repo_hook,admin:repo_hook,read:org'
     provider :github, ENV['GITHUB_KEY'], ENV['GITHUB_SECRET'], scope: user_scopes
   end
   enable :sessions
+  set :session_secret, '1234569234982382entropygoeshereandothersecretthings'
 end
 
 get '/' do
