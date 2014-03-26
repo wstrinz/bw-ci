@@ -27,19 +27,22 @@ end
 describe JenkinsConfig, :vcr do
   let(:options) { { job_name: 'test_project',
                     github_repo:  'wstrinz/publisci',
-                    build_script: "bundle \n bundle exec rake" } }
+                    build_script: "bundle \n bundle exec rake",
+                    enable_pullrequests: false } }
 
   it "creates a config" do
-    cfg = JenkinsConfig.new(options)
+    cfg = JenkinsConfig.new()
+    cfg.set(options)
     expect(cfg.job_name).to eq(options[:job_name])
     expect(cfg.validate!).to be_true
   end
 
   describe "submits valid config to jenkins" do
-    let(:config) { JenkinsConfig.new(options) }
+    let(:config) { JenkinsConfig.new() }
 
     before do
       JenkinsHelper.client.job.delete(config.job_name) rescue nil
+      config.set(options)
     end
 
     after do

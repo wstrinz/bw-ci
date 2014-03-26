@@ -5,8 +5,8 @@ class JenkinsHelper
   class << self
     def client
       @client ||= JenkinsApi::Client.new( server_url: ENV['JENKINS_URL'],
-                              username:   ENV["JENKINS_USER"],
-                              password:   ENV["JENKINS_KEY"] )
+                                          username:   ENV["JENKINS_USER"],
+                                          password:   ENV["JENKINS_KEY"] )
       @client.logger.level = 4
       @client
     end
@@ -68,14 +68,13 @@ class JenkinsConfig
 source /var/lib/jenkins/.bashrc
 EOF
 
-  attr_accessor :config_document
-  [REQUIRED_ATTRS, OPTIONAL_ATTRS].flatten.each { |a| attr_reader a }
+  attr_accessor :config_document, :job_name
+  #[REQUIRED_ATTRS, OPTIONAL_ATTRS].flatten.each { |a| attr_reader a }
 
   class << self
     def project_template
       xml_string = IO.read(File.dirname(__FILE__) + "/jenkins_templates/default.xml")
-      # create nokogiri document
-      Nokogiri::XML(xml_string)
+      xml_string
     end
 
     def script_boilerplate
@@ -83,15 +82,14 @@ EOF
     end
   end
 
-  def initialize(options = {})
-    self.config_document = self.class.project_template
+  def initialize(config = self.class.project_template)
+    self.config_document = Nokogiri::XML(config)
+  end
 
-    all_attrs.each do |a|
-      if options[a]
-        self.send(:"#{a}=", options[a])
-      end
+  def set(options = {})
+    options.keys.each do |opt|
+      self.send(:"#{opt}=", options[opt])
     end
-
   end
 
   def all_attrs
@@ -112,10 +110,6 @@ EOF
     config_document.to_xml
   end
 
-  def job_name=(name)
-    @job_name = name
-  end
-
   def github_repo=(repo)
     @github_repo = repo
     nodes = @config_document.at_css("userRemoteConfigs").children.select{|c| c.name == "hudson.plugins.git.UserRemoteConfig"}
@@ -124,14 +118,55 @@ EOF
     end
   end
 
+  def github_repo
+    @config_document.at_css("userRemoteConfigs").at_css("url").text
+  end
+
   def project_url=(url)
     @project_url = url
     config_document.at_css("projectUrl").children.first.content = url
+  end
+
+  def project_url
+    config_document.at_css("projectUrl").children.first.content
+  end
+
+  def enable_pullrequests=(enable)
+    @enable_pullrequests = enable
+    remote_config = @config_document.at_css("userRemoteConfigs")
+    pr_node = remote_config.children.find { |c| c.at_css("refspec") && c.at_css("refspec").text == "+refs/pull/*:refs/remotes/origin/pr/*" }
+
+    if enable
+      unless pr_node
+        node_xml = <<-EOF
+<hudson.plugins.git.UserRemoteConfig>
+  <name>pr</name>
+  <refspec>+refs/pull/*:refs/remotes/origin/pr/*</refspec>
+  <url>#{github_repo}</url>
+  <credentialsId>7f705fde-c469-4657-974e-6bd1d5cdcaf2</credentialsId>
+</hudson.plugins.git.UserRemoteConfig>
+        EOF
+
+        remote_config.add_child Nokogiri::XML(node_xml).elements.first
+      end
+    else
+      pr_node.remove if pr_node
+    end
+  end
+
+  def enable_pullrequests?
+    remote_config = @config_document.at_css("userRemoteConfigs")
+    remote_config.children.any? { |c| c.at_css("refspec") && c.at_css("refspec").text == "+refs/pull/*:refs/remotes/origin/pr/*" }
   end
 
   def build_script=(script)
     @build_script = script
     node = config_document.at_css("builders").at_css("command").children.first
     node.content = SCRIPT_BOILERPLATE + script
+  end
+
+  def build_script
+    node = config_document.at_css("builders").at_css("command").children.first
+    node.content.sub(SCRIPT_BOILERPLATE,"")
   end
 end
