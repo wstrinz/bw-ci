@@ -12,8 +12,14 @@
     <configVersion>2</configVersion>
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
-        <refspec>+refs/head/*:refs/remotes/origin/*</refspec>
-        <url>git@github.com:bendyworks/bw_poopdeck.git</url>
+        <name>pr</name>
+        <refspec>+refs/pull/*:refs/remotes/origin/pr/*</refspec>
+        <url>changeme</url>
+        <credentialsId>7f705fde-c469-4657-974e-6bd1d5cdcaf2</credentialsId>
+      </hudson.plugins.git.UserRemoteConfig>
+      <hudson.plugins.git.UserRemoteConfig>
+        <name>main</name>
+        <url>changeme</url>
         <credentialsId>7f705fde-c469-4657-974e-6bd1d5cdcaf2</credentialsId>
       </hudson.plugins.git.UserRemoteConfig>
     </userRemoteConfigs>
@@ -54,9 +60,9 @@
   <builders>
     <hudson.tasks.Shell>
       <command>#!/bin/bash -l
-source /var/lib/jenkins/.bashrc
-bundle
-bundle exec rake</command>
+        source /var/lib/jenkins/.bashrc
+        bundle
+        bundle exec rake</command>
     </hudson.tasks.Shell>
   </builders>
   <publishers/>

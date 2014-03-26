@@ -30,6 +30,9 @@ class JenkinsHelper
       script.sub(JenkinsConfig.script_boilerplate,"")
     end
 
+    def job_config(job)
+    end
+
     def jenkins_repos
       client.job.list_all.map { |job| github_repo(job) }.compact
     end
@@ -57,7 +60,7 @@ class JenkinsConfig
   class MissingAttrError < StandardError; end
 
   REQUIRED_ATTRS      = [:job_name, :github_repo]
-  OPTIONAL_ATTRS      = [:build_script, :project_url]
+  OPTIONAL_ATTRS      = [:build_script, :project_url, :enable_pullrequests]
   ATTRS_WITH_DEFAULTS = []
 
   SCRIPT_BOILERPLATE = <<-EOF
@@ -105,7 +108,7 @@ EOF
 
   def to_xml
     validate!
-    self.project_url = "http://github.com/#{github_repo}" unless project_url
+    project_url = "http://github.com/#{github_repo}" unless project_url
     config_document.to_xml
   end
 
@@ -115,8 +118,10 @@ EOF
 
   def github_repo=(repo)
     @github_repo = repo
-    node = @config_document.at_css("userRemoteConfigs").children[1].at_css("url")
-    node.children.first.content = "git@github.com:#{github_repo}.git"
+    nodes = @config_document.at_css("userRemoteConfigs").children.select{|c| c.name == "hudson.plugins.git.UserRemoteConfig"}
+    nodes.each do |node|
+      node.at_css("url").children.first.content = "git@github.com:#{github_repo}.git"
+    end
   end
 
   def project_url=(url)

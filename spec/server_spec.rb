@@ -56,4 +56,15 @@ describe "bw-ci app" do
       expect(JSON.parse(last_response.body)).to eq(expected_repos)
     end
   end
+
+  describe '/job_config' do
+    let(:expected_config) { { job: "Poopdeck",
+                              enable_pullrequests: true,
+                              build_script: JenkinsHelper.build_config("Poopdeck") } }
+
+    it 'retrieves project config as json' do
+      get "/job_config/Poopdeck"
+      expect(last_response.body).to eq(expected_config.to_json)
+    end
+  end
 end

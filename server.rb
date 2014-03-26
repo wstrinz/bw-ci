@@ -35,6 +35,10 @@ helpers do
     JenkinsHelper.jenkins_repos
   end
 
+  def job_config(job)
+    JenkinsHelper.job_config(job)
+  end
+
   def test_config(info_hash, user, repo)
     job = JenkinsHelper.job_for_repo(user, repo)
     if job
@@ -134,6 +138,12 @@ get '/test_config/:user/:repo' do
   ensure_authenticated
   content_type :json
   test_config(session[:auth_hash], params[:user], params[:repo]).to_json
+end
+
+get '/job_config/:job' do
+  ensure_authenticated
+  content_type :json
+  job_config(params[:job]).to_json
 end
 
 post '/' do

@@ -3,13 +3,6 @@
   %link{:rel => :stylesheet, :type => :"text/css", :href => "repos.css"}
 %body
   %h3 Repositories for #{@user}
-  %form{action: '/repos', method: 'post', id: 'repoform'}
-    Build Script:
-    %textarea{form: 'repoform', name: 'script', cols: "40"}
-      = @build_script
-    %br
-    %br
-    %input{type: 'submit', value: 'Save'}
-    %br
-    .repo-container
-      #repo-list
+  %br
+  .repo-container
+    #repo-list
