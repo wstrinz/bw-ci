@@ -62,8 +62,6 @@ class JenkinsHelper
 end
 
 class JenkinsConfig
-
-
   class MissingAttrError < StandardError; end
 
   REQUIRED_ATTRS      = [:job_name, :github_repo]

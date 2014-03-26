@@ -68,4 +68,14 @@ describe "bw-ci app" do
       expect(last_response.body).to eq(expected_config.to_json)
     end
   end
+
+  describe '/enable_job' do
+    it "creates a job if none exist"
+    it "updates job config if exists"
+  end
+
+  describe '/disable_job' do
+    it "disables a job by default"
+    it "optionally deletes job"
+  end
 end
