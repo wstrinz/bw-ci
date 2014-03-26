@@ -17,10 +17,10 @@ class JenkinsHelper
       if cfg["project"]["properties"] && cfg["project"]["properties"]["com.coravy.hudson.plugins.github.GithubProjectProperty"]
         url = cfg["project"]["properties"]["com.coravy.hudson.plugins.github.GithubProjectProperty"]["projectUrl"]
 
-        { job:  job,
-          user: url.split("/")[-2],
-          name: url.split("/")[-1],
-          url: url }
+        { job_name:   job,
+          user:       url.split("/")[-2],
+          name:       url.split("/")[-1],
+          url:        url }
       end
     end
 
@@ -31,6 +31,13 @@ class JenkinsHelper
     end
 
     def job_config(job)
+      cfg = JenkinsConfig.new(client.job.get_config(job))
+      cfg_hash = {job_name: job}
+      %i{github_repo build_script enable_pullrequests}.each do |attribute|
+        cfg_hash[attribute] = cfg.send(attribute)
+      end
+
+      cfg_hash
     end
 
     def jenkins_repos
@@ -49,7 +56,7 @@ class JenkinsHelper
 
     def job_for_repo(user, repo)
       job = jenkins_repos.find{|r| r[:user] == user && r[:name] == repo}
-      job[:job] if job
+      job[:job_name] if job
     end
   end
 end
@@ -154,7 +161,7 @@ EOF
     end
   end
 
-  def enable_pullrequests?
+  def enable_pullrequests
     remote_config = @config_document.at_css("userRemoteConfigs")
     remote_config.children.any? { |c| c.at_css("refspec") && c.at_css("refspec").text == "+refs/pull/*:refs/remotes/origin/pr/*" }
   end

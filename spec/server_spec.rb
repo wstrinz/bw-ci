@@ -45,10 +45,10 @@ describe "bw-ci app" do
   end
 
   describe '/enabled_repositories', :vcr do
-    let(:expected_repos) { [{ "job"   => "Poopdeck",
-                              "user"  => "bendyworks",
-                              "name"  => "bw_poopdeck",
-                              "url"   => "https://github.com/bendyworks/bw_poopdeck/" }] }
+    let(:expected_repos) { [{ "job_name"   => "Poopdeck",
+                              "user"       => "bendyworks",
+                              "name"       => "bw_poopdeck",
+                              "url"        => "https://github.com/bendyworks/bw_poopdeck/" }] }
 
     it "retrieves known repos from jenkins" do
       get "/enabled_repositories"
@@ -57,10 +57,11 @@ describe "bw-ci app" do
     end
   end
 
-  describe '/job_config' do
-    let(:expected_config) { { job: "Poopdeck",
-                              enable_pullrequests: true,
-                              build_script: JenkinsHelper.build_config("Poopdeck") } }
+  describe '/job_config', :vcr do
+    let(:expected_config) { { job_name:             "Poopdeck",
+                              github_repo:          "git@github.com:bendyworks/bw_poopdeck.git",
+                              build_script:         JenkinsHelper.build_config("Poopdeck"),
+                              enable_pullrequests:  true } }
 
     it 'retrieves project config as json' do
       get "/job_config/Poopdeck"
