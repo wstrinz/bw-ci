@@ -61,7 +61,7 @@ function saveJob(repo){
   id = repo.id
   job_name      = repo.job_name ? repo.job_name : repo.name
   github_repo   = repo.owner + "/" + repo.name
-  enable_pr     = $("#repo" + id).find(".enable-pullrequest").val() == "on"
+  enable_pr     = $("#repo" + id).find(".enable-pullrequest").prop("checked")
   build_script  = $("#repo" + id).find(".build-script").text()
 
   data = {
@@ -73,7 +73,7 @@ function saveJob(repo){
 
   $.post("/enable_job", {data: JSON.stringify(data)}, function(data){
     if(data.status == "success"){
-      alert("successed")
+      $("#repo" + repo.id).find(".save-changes").text("Update Job")
       syncWithJenkins()
     }
     else {

@@ -140,7 +140,7 @@ EOF
     validate!
     unless @project_url
       repo = github_repo.gsub("git@github.com:","").gsub(/\.git$/,"")
-      self.project_url = "https://github.com/#{repo}" unless @project_url
+      self.project_url = "https://github.com/#{repo}/" unless @project_url
     end
     config_document.to_xml
   end
