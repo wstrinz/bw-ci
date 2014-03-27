@@ -151,5 +151,11 @@ get '/job_config/:job' do
 end
 
 post '/enable_job' do
-  enable_job(params[:data])
+  content_type :json
+  #begin
+    enable_job(params[:data])
+    {status: :success}.to_json
+  #rescue Exception => e
+   # {status: :failure, reason: e}.to_json
+  #end
 end

@@ -138,7 +138,10 @@ EOF
 
   def to_xml
     validate!
-    project_url = "http://github.com/#{github_repo}" unless project_url
+    unless @project_url
+      repo = github_repo.gsub("git@github.com:","").gsub(/\.git$/,"")
+      self.project_url = "https://github.com/#{repo}" unless @project_url
+    end
     config_document.to_xml
   end
 

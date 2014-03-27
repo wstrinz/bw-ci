@@ -102,7 +102,8 @@ describe "bw-ci app" do
       expect(last_response.status).to eq(200)
 
       get '/job_config/test_enable_job'
-      expect(JSON.parse(last_response.body)["build_script"]).to eq(new_config[:build_script])
+      data = JSON.parse(last_response.body)
+      expect(data["build_script"]).to eq(new_config[:build_script])
     end
   end
 
