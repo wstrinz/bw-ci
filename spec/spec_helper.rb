@@ -10,6 +10,18 @@ def app
   Sinatra::Application
 end
 
+def create_test_job(options = {})
+  default_config = {  job_name:             "test_job",
+                      github_repo:          "bendyworks/bw_poopdeck",
+                      build_script:         "bundle\nbundle exec rake",
+                      enable_pullrequests:  true }
+
+  config = default_config.merge(options)
+
+  JenkinsHelper.client.job.delete(config[:job_name]) rescue nil
+  JenkinsHelper.create_job(default_config)
+end
+
 require 'vcr'
 
 VCR.configure do |c|

@@ -113,25 +113,25 @@ describe "bw-ci app" do
 
   describe '/delete_job', :vcr do
     before(:all) do
-      @job_config  = {   job_name:             "test_delete_job",
-                         github_repo:          "bendyworks/bw_poopdeck",
-                         build_script:         JenkinsHelper.build_config("Poopdeck"),
-                         enable_pullrequests:  true }
-      JenkinsHelper.client.job.delete("test_delete_job") rescue nil
-      JenkinsHelper.create_job(@job_config)
+      @job_name = "test_delete_job"
+      create_test_job(job_name: @job_name)
     end
 
     after(:all) do
-      JenkinsHelper.client.job.delete("test_delete_job") rescue nil
+      JenkinsHelper.client.job.delete(@job_name) rescue nil
     end
 
     it "deletes job from jenkins" do
-      post '/delete_job/test_delete_job'
+      post "/delete_job/#{@job_name}"
       expect(last_response.status).to eq(200)
 
       get '/enabled_repositories'
-      job_exists = JSON.parse(last_response.body).any?{|r| r["job_name"] == @job_config[:job_name]}
+      job_exists = JSON.parse(last_response.body).any?{|r| r["job_name"] == @job_name}
       expect(job_exists).to be_false
     end
+  end
+
+  describe "/build_job" do
+    it "triggers a build"
   end
 end
