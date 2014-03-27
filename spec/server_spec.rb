@@ -35,7 +35,9 @@ describe "bw-ci app" do
   end
 
   describe "/test_config", :vcr do
-    let(:expected_config) { { "type" => "travis", "config" => {"language"=>"ruby", "rvm"=>["1.9.3", "2.0.0", "jruby-19mode"]} } }
+    let(:expected_config) { { "type"    => "travis",
+                              "config"  => { "language" => "ruby",
+                                             "rvm"      => ["1.9.3", "2.0.0", "jruby-19mode"] } } }
 
     it "retrieves test config from a given repository" do
       get "/test_config/wstrinz/publisci"
@@ -67,11 +69,41 @@ describe "bw-ci app" do
       get "/job_config/Poopdeck"
       expect(last_response.body).to eq(expected_config.to_json)
     end
+
+    it 'sends null for nonexistant jobs' do
+      get "/job_config/NotAJob"
+      expect(last_response.body).to eq(nil.to_json)
+    end
   end
 
-  describe '/enable_job' do
-    it "creates a job if none exist"
-    it "updates job config if exists"
+  describe '/enable_job', :vcr do
+    let(:job_config) { {  job_name:             "test_enable_job",
+                          github_repo:          "bendyworks/bw_poopdeck",
+                          build_script:         JenkinsHelper.build_config("Poopdeck"),
+                          enable_pullrequests:  true } }
+
+    before(:all) do
+      JenkinsHelper.client.job.delete("test_enable_job") rescue nil
+    end
+
+    after(:all) do
+      JenkinsHelper.client.job.delete("test_enable_job") rescue nil
+    end
+
+    it "creates a job if none exist" do
+      post '/enable_job', data: job_config.to_json
+      expect(last_response.status).to eq(200)
+    end
+
+    it "updates job config if exists" do
+      new_config = job_config.clone
+      new_config[:build_script] = "do nothing"
+      post '/enable_job', data: new_config.to_json
+      expect(last_response.status).to eq(200)
+
+      get '/job_config/test_enable_job'
+      expect(JSON.parse(last_response.body)["build_script"]).to eq(new_config[:build_script])
+    end
   end
 
   describe '/disable_job' do

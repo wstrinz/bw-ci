@@ -55,6 +55,10 @@ helpers do
     end
   end
 
+  def enable_job(options)
+    JenkinsHelper.create_or_update_job(JSON.parse(options))
+  end
+
   def authenticated?
     session[:authenticated]
   end
@@ -146,8 +150,6 @@ get '/job_config/:job' do
   job_config(params[:job]).to_json
 end
 
-post '/' do
-  puts "got #{params}"
-
-  haml :repos
+post '/enable_job' do
+  enable_job(params[:data])
 end

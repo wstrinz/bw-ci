@@ -30,9 +30,14 @@ class JenkinsHelper
       script.sub(JenkinsConfig.script_boilerplate,"")
     end
 
+    def job_exists?(job)
+      client.job.list_all.include?(job)
+    end
+
     def job_config(job)
+      return nil unless job_exists?(job)
       cfg = JenkinsConfig.new(client.job.get_config(job))
-      cfg_hash = {job_name: job}
+      cfg_hash = { job_name: job }
       %i{github_repo build_script enable_pullrequests}.each do |attribute|
         cfg_hash[attribute] = cfg.send(attribute)
       end
@@ -44,9 +49,31 @@ class JenkinsHelper
       client.job.list_all.map { |job| github_repo(job) }.compact
     end
 
+    def create_or_update_job(config)
+      if job_exists?(config["job_name"])
+        update_job(config)
+      else
+        create_job(config)
+      end
+    end
+
+    def update_job(config)
+      if config.is_a? Hash
+        opts = config
+        config = JenkinsConfig.new()
+        config.set(opts)
+      end
+
+      raise "Instance of JenkinsConfig required to create a new job" unless config.is_a? JenkinsConfig
+
+      client.job.update(config.job_name, config.to_xml)
+    end
+
     def create_job(config)
       if config.is_a? Hash
-        config = JenkinsConfig.new(config)
+        opts = config
+        config = JenkinsConfig.new()
+        config.set(opts)
       end
 
       raise "Instance of JenkinsConfig required to create a new job" unless config.is_a? JenkinsConfig
@@ -119,7 +146,7 @@ EOF
     @github_repo = repo
     nodes = @config_document.at_css("userRemoteConfigs").children.select{|c| c.name == "hudson.plugins.git.UserRemoteConfig"}
     nodes.each do |node|
-      node.at_css("url").children.first.content = "git@github.com:#{github_repo}.git"
+      node.at_css("url").children.first.content = "git@github.com:#{repo}.git"
     end
   end
 
