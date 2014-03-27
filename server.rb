@@ -59,6 +59,10 @@ helpers do
     JenkinsHelper.create_or_update_job(JSON.parse(options))
   end
 
+  def delete_job(job)
+    JenkinsHelper.delete_job(job)
+  end
+
   def authenticated?
     session[:authenticated]
   end
@@ -158,4 +162,14 @@ post '/enable_job' do
   #rescue Exception => e
    # {status: :failure, reason: e}.to_json
   #end
+end
+
+post '/delete_job/:job' do
+  content_type :json
+  begin
+    delete_job(params[:job])
+    {status: :success}.to_json
+  rescue Exception => e
+    {status: :failure, reason: e}.to_json
+  end
 end

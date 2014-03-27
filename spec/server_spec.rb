@@ -109,6 +109,29 @@ describe "bw-ci app" do
 
   describe '/disable_job' do
     it "disables a job by default"
-    it "optionally deletes job"
+  end
+
+  describe '/delete_job', :vcr do
+    before(:all) do
+      @job_config  = {   job_name:             "test_delete_job",
+                         github_repo:          "bendyworks/bw_poopdeck",
+                         build_script:         JenkinsHelper.build_config("Poopdeck"),
+                         enable_pullrequests:  true }
+      JenkinsHelper.client.job.delete("test_delete_job") rescue nil
+      JenkinsHelper.create_job(@job_config)
+    end
+
+    after(:all) do
+      JenkinsHelper.client.job.delete("test_delete_job") rescue nil
+    end
+
+    it "deletes job from jenkins" do
+      post '/delete_job/test_delete_job'
+      expect(last_response.status).to eq(200)
+
+      get '/enabled_repositories'
+      job_exists = JSON.parse(last_response.body).any?{|r| r["job_name"] == @job_config[:job_name]}
+      expect(job_exists).to be_false
+    end
   end
 end

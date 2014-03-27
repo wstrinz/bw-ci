@@ -49,6 +49,10 @@ class JenkinsHelper
       client.job.list_all.map { |job| github_repo(job) }.compact
     end
 
+    def delete_job(job)
+      client.job.delete(job)
+    end
+
     def create_or_update_job(config)
       if job_exists?(config["job_name"])
         update_job(config)

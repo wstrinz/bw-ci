@@ -21,8 +21,13 @@
   font-size: 1em;
 }
 .save-changes {
-  margin-top: 2em;
+  margin-top: 3em;
   font-size: 1em;
+}
+.delete-job {
+  float: right;
+  font-size: 1em;
+  margin-bottom: 1.5em;
 }
 .enable-pullrequest {
   margin-bottom: 1.5em;
