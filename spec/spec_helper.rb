@@ -19,7 +19,7 @@ def create_test_job(options = {})
   config = default_config.merge(options)
 
   JenkinsHelper.client.job.delete(config[:job_name]) rescue nil
-  JenkinsHelper.create_job(default_config)
+  JenkinsHelper.create_job(config)
 end
 
 require 'vcr'
