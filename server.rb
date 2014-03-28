@@ -108,6 +108,11 @@ configure do
   set :session_secret, ENV['SESSION_SECRET']
 end
 
+configure :production do
+  set :host, 'bw-ci.herokuapp.com'
+  set :force_ssl, true
+end
+
 get '/' do
   if authenticated?
     @build_script = "rake"
