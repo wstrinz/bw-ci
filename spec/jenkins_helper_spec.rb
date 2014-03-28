@@ -1,7 +1,7 @@
 
 require_relative 'spec_helper'
 
-describe JenkinsHelper, :vcr do
+describe JenkinsHelper do
   describe ".github_repo" do
     it "returns repo data" do
       expect(JenkinsHelper.github_repo("Poopdeck")[:name]).to eq("bw_poopdeck")

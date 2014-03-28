@@ -45,5 +45,9 @@ class GithubHelper
         }.sort_by{|r| r[:name].downcase},
       ].flatten
     end
+
+    def add_deploy_key(info_hash, repo, title, key)
+      gh_client(info_hash["credentials"]["token"]).add_deploy_key(repo, title, key)
+    end
   end
 end
