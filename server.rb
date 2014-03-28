@@ -4,6 +4,7 @@ require 'json'
 require 'haml'
 require 'omniauth'
 require 'omniauth-github'
+require 'rack/ssl-enforcer'
 
 require_relative 'github_helper.rb'
 require_relative 'jenkins_helper.rb'
@@ -100,17 +101,15 @@ helpers do
 end
 
 configure do
+  if self.class.production?
+    use Rack::SslEnforcer
+  end
   use OmniAuth::Builder do
     user_scopes = 'user,repo,read:repo_hook,write:repo_hook,admin:repo_hook,read:org'
     provider :github, ENV['GITHUB_KEY'], ENV['GITHUB_SECRET'], scope: user_scopes
   end
   enable :sessions
   set :session_secret, ENV['SESSION_SECRET']
-end
-
-configure :production do
-  set :host, 'bw-ci.herokuapp.com'
-  set :force_ssl, true
 end
 
 get '/' do
