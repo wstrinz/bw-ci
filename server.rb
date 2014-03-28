@@ -105,7 +105,7 @@ configure do
     provider :github, ENV['GITHUB_KEY'], ENV['GITHUB_SECRET'], scope: user_scopes
   end
   enable :sessions
-  set :session_secret, '1234569234982382entropygoeshereandothersecretthings'
+  set :session_secret, ENV['SESSION_SECRET']
 end
 
 get '/' do
@@ -136,7 +136,6 @@ get '/auth/:provider/callback' do
   content_type :json
 
   auth_hash = request.env['omniauth.auth']
-  puts auth_hash
   session[:authenticated] = true
   session[:auth_hash] = auth_hash
   redirect "/"
@@ -170,6 +169,12 @@ get '/build_status/:job' do
   ensure_authenticated
   content_type :json
   build_status(params[:job]).to_json
+end
+
+get '/jenkins_url' do
+  ensure_authenticated
+  content_type :json
+  {url: ENV["JENKINS_URL"]}.to_json
 end
 
 post '/enable_job' do

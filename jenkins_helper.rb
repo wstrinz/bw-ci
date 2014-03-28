@@ -4,7 +4,7 @@ require 'active_support/core_ext'
 class JenkinsHelper
   class << self
     def client
-      @client ||= JenkinsApi::Client.new( server_url: ENV['JENKINS_URL'],
+      @client ||= JenkinsApi::Client.new( server_url: ENV["JENKINS_URL"],
                                           username:   ENV["JENKINS_USER"],
                                           password:   ENV["JENKINS_KEY"] )
       @client.logger.level = 4

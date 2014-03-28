@@ -1,5 +1,4 @@
 var repos = []
-var jenkinsUrl = "http://72.14.186.182/jenkins"
 var hideInactive = false
 
 function toggleRepo(repoId){
@@ -234,6 +233,12 @@ function getRepos(){
   })
 }
 
+function fetchJenkinsUrl(){
+  jenkinsUrl = null;
+  $.get("/jenkins_url", function(data){ jenkinsUrl = data["url"] })
+}
+
 $(document).ready( function(){
+  fetchJenkinsUrl();
   getRepos();
 } )
