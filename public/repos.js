@@ -1,5 +1,6 @@
 var repos = []
-var jenkins_url = "http://72.14.186.182/jenkins"
+var jenkinsUrl = "http://72.14.186.182/jenkins"
+var hideInactive = false
 
 function toggleRepo(repoId){
   index = parseInt(repoId)
@@ -165,7 +166,7 @@ function configHtml(){
 }
 
 function switchHtml(id, name){
-  return name + '<div class="repo" id="repo' + id + '"> \
+  return '<div class="repo-container">' + name + '<div class="repo" id="repo' + id + '"> \
     <a target="_blank" class="repo-status"></a> \
     <div class="onoffswitch"> \
       <input type="checkbox" id="onoffswitch-' + id + '" onclick=toggleRepo(' + id + ') name="onoffswitch" class="onoffswitch-checkbox"> \
@@ -176,11 +177,23 @@ function switchHtml(id, name){
     </div>' + configHtml() + ' \
     <br/> \
   </div> \
-  <br/>'
+  <br/> \
+  </div> '
 }
 
 function setLinkToJob(repo, url) {
   $("#repo" + repo.id).find(".repo-status").prop("href", url)
+}
+
+function showHideRepos(){
+  hideInactive = !hideInactive
+  if(hideInactive) {
+    inactives = _.filter($(".onoffswitch-checkbox"), function(checkbox){ return !checkbox.checked })
+    _.each(inactives, function(el) { $(el).parent().parent().parent().hide() })
+  }
+  else {
+    _.each($(".repo-container"), function(container) { $(container).show() })
+  }
 }
 
 function addRepo(repo){
@@ -200,7 +213,7 @@ function syncWithJenkins(){
         $("#repo" + r.id).find(".save-changes").text("Update Job")
         $("#repo" + r.id).find(".delete-job").prop("disabled", false)
         updateBuildStatus(r)
-        setLinkToJob(r, jenkins_url + "/job/" + r.jobName)
+        setLinkToJob(r, jenkinsUrl + "/job/" + r.jobName)
         if(!$("#onoffswitch-" + r.id).prop("checked"))
           $("#onoffswitch-" + r.id).trigger("click")
       }

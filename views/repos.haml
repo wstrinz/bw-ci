@@ -3,6 +3,6 @@
   %link{:rel => :stylesheet, :type => :"text/css", :href => "repos.css"}
 %body
   %h3 Repositories for #{@user}
-  %br
-  .repo-container
+  %button{:class => "show-hide-repos", onclick: "showHideRepos()"} Show/Hide Inactive Repos
+  .repos-container
     #repo-list

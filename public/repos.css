@@ -50,6 +50,10 @@
   margin-bottom: 1em;
   font-size: 1em;
 }
+.show-hide-repos {
+  margin: 1em 0 1em 0;
+  font-size: 0.9em;
+}
 .enable-pullrequest {
   margin-bottom: 1.5em;
 }
