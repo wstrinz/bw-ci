@@ -80,6 +80,10 @@ function retrieveBuildScriptClick(el){
   retrieveBuildScript(repo)
 }
 
+function triggerBuild(jobName){
+  $.post("/build_job/"+jobName)
+}
+
 function saveJob(repo){
   id = repo.id
   job_name      = repo.jobName ? repo.jobName : repo.name
@@ -96,6 +100,7 @@ function saveJob(repo){
 
   $.post("/enable_job", {data: JSON.stringify(data)}, function(data){
     if(data.status == "success"){
+      triggerBuild(job_name)
       syncWithJenkins()
     }
     else {
