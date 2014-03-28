@@ -73,7 +73,7 @@ function retrieveBuildScript(repo){
 }
 
 function retrieveBuildScriptClick(el){
-  repo_node = el.parentNode.parentNode.parentNode ;
+  repo_node = el.parentNode.parentNode.parentNode.parentNode ;
   id = parseInt(repo_node.id.substring(4, repo_node.id.length)) ;
   repo = repos[id] ;
 
