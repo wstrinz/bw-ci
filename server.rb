@@ -101,7 +101,7 @@ helpers do
 end
 
 configure do
-  if self.class.production?
+  if production?
     use Rack::SslEnforcer
   end
   use OmniAuth::Builder do
