@@ -53,7 +53,7 @@ function colorForStatus(status){
 }
 
 function updateConfigDisplay(repo, config){
-  $("#repo" + repo.id).find(".build-script").text(config.build_script)
+  $("#repo" + repo.id).find(".build-script").val(config.build_script)
   $("#repo" + repo.id).find(".enable-pullrequest").prop("checked", config.enable_pullrequests)
 }
 
