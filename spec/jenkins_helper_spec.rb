@@ -3,11 +3,15 @@ require_relative 'spec_helper'
 
 describe JenkinsHelper, :vcr do
   describe ".github_repo" do
-    it "returns repo data"
+    it "returns repo data" do
+      expect(JenkinsHelper.github_repo("Poopdeck")[:name]).to eq("bw_poopdeck")
+    end
   end
 
   describe ".jenkins_repos" do
-    it "returns list of enabled repos"
+    it "returns list of enabled repos" do
+      expect(JenkinsHelper.jenkins_repos.any?{|r| r[:name] == "bw_poopdeck"}).to be_true
+    end
   end
 
   describe ".job_for_repo" do

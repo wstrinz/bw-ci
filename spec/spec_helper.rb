@@ -22,6 +22,10 @@ def create_test_job(options = {})
   JenkinsHelper.create_job(config)
 end
 
+def destroy_test_job(job_name = "test_job")
+  JenkinsHelper.client.job.delete(job_name) rescue nil
+end
+
 require 'vcr'
 
 VCR.configure do |c|

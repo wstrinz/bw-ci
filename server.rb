@@ -63,6 +63,14 @@ helpers do
     JenkinsHelper.delete_job(job)
   end
 
+  def build_job(job)
+    JenkinsHelper.client.job.build(job)
+  end
+
+  def disable_job(job)
+    JenkinsHelper.client.job.disable(job)
+  end
+
   def authenticated?
     session[:authenticated]
   end
@@ -172,4 +180,15 @@ post '/delete_job/:job' do
   rescue Exception => e
     {status: :failure, reason: e}.to_json
   end
+end
+
+post '/build_job/:job' do
+  content_type :json
+  build_job(params[:job])
+  {status: :success}
+end
+
+post '/disable_job/:job' do
+  content_type :json
+  disable_job(params[:job])
 end

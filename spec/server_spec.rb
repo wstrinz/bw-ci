@@ -107,8 +107,22 @@ describe "bw-ci app" do
     end
   end
 
-  describe '/disable_job' do
-    it "disables a job by default"
+  describe '/disable_job', :vcr do
+    before(:all) do
+      @job_name = "test_disable_job"
+      create_test_job(job_name: @job_name)
+    end
+
+    after(:all) do
+      destroy_test_job(@job_name)
+    end
+
+    it "disables a job" do
+      expect(JenkinsHelper.disabled?(@job_name)).to be_false
+      post "/disable_job/#{@job_name}"
+      expect(last_response.status).to eq(200)
+      expect(JenkinsHelper.disabled?(@job_name)).to be_true
+    end
   end
 
   describe '/delete_job', :vcr do
@@ -118,7 +132,7 @@ describe "bw-ci app" do
     end
 
     after(:all) do
-      JenkinsHelper.client.job.delete(@job_name) rescue nil
+      destroy_test_job(@job_name)
     end
 
     it "deletes job from jenkins" do
@@ -131,7 +145,22 @@ describe "bw-ci app" do
     end
   end
 
-  describe "/build_job" do
-    it "triggers a build"
+  describe "/build_job", :vcr do
+    before(:all) do
+      @job_name = "test_build_job"
+      create_test_job(job_name: @job_name)
+    end
+
+    after(:all) do
+      destroy_test_job(@job_name)
+    end
+
+    it "triggers a build" do
+      post "/build_job/#{@job_name}"
+      expect(last_response.status).to eq(200)
+
+      # TODO: figure out a way to check this that doesn't slow down tests
+      # expect(JenkinsHelper.client.job.get_current_build_number(@job_name)).to eq(1)
+    end
   end
 end

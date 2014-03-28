@@ -53,6 +53,10 @@ class JenkinsHelper
       client.job.delete(job)
     end
 
+    def disabled?(job)
+      Nokogiri::XML(client.job.get_config(job)).at_css('disabled').text == "true"
+    end
+
     def create_or_update_job(config)
       if job_exists?(config["job_name"])
         update_job(config)
