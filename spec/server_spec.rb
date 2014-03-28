@@ -163,4 +163,11 @@ describe "bw-ci app" do
       # expect(JenkinsHelper.client.job.get_current_build_number(@job_name)).to eq(1)
     end
   end
+
+  describe "/build_status" do
+    it "returns project build status" do
+      get "/build_status/Poopdeck"
+      expect(last_response.body).to eq({status: "success"}.to_json)
+    end
+  end
 end

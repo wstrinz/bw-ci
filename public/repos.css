@@ -14,7 +14,8 @@
 }
 .repo-status {
   float: left;
-  background: grey;
+  background: white;
+  border: 1px solid grey;
   width: 32;
   height: 32;
   margin-right: 10px;
@@ -80,8 +81,8 @@
   background-color: #1AA31F; color: #FFFFFF;
 }
 .onoffswitch-inner:after {
-  content: "Show Config";
-  padding-right: 10px;
+  content: "Config";
+  padding-right: 30px;
   background-color: #EEEEEE; color: #999999;
   text-align: right;
 }

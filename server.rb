@@ -71,6 +71,10 @@ helpers do
     JenkinsHelper.client.job.disable(job)
   end
 
+  def build_status(job)
+    {status: JenkinsHelper.client.job.get_current_build_status(job)}
+  end
+
   def authenticated?
     session[:authenticated]
   end
@@ -162,7 +166,14 @@ get '/job_config/:job' do
   job_config(params[:job]).to_json
 end
 
+get '/build_status/:job' do
+  ensure_authenticated
+  content_type :json
+  build_status(params[:job]).to_json
+end
+
 post '/enable_job' do
+  ensure_authenticated
   content_type :json
   #begin
     enable_job(params[:data])
@@ -173,6 +184,7 @@ post '/enable_job' do
 end
 
 post '/delete_job/:job' do
+  ensure_authenticated
   content_type :json
   begin
     delete_job(params[:job])
@@ -183,12 +195,14 @@ post '/delete_job/:job' do
 end
 
 post '/build_job/:job' do
+  ensure_authenticated
   content_type :json
   build_job(params[:job])
   {status: :success}
 end
 
 post '/disable_job/:job' do
+  ensure_authenticated
   content_type :json
   disable_job(params[:job])
 end

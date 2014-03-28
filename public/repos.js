@@ -1,4 +1,5 @@
 var repos = []
+var jenkins_url = "http://72.14.186.182/jenkins"
 
 function toggleRepo(repoId){
   index = parseInt(repoId)
@@ -20,7 +21,7 @@ function enableRepo(repo){
     })
   }
   div = $("#onoffswitch-" + repo.id).parent().parent().children(".repo-config-container")
-  div.css("display","inherit")
+  div.css("display", "inherit")
 
 }
 
@@ -28,6 +29,27 @@ function disableRepo(repo){
   div = $("#onoffswitch-" + repo.id).parent().parent().children(".repo-config-container")
   $("#onoffswitch-" + repo.id).prop("checked", false)
   div.hide()
+}
+
+function updateBuildStatus(repo){
+  $.get("/build_status/" + repo.jobName, function(data){
+    $("#repo" + repo.id).find(".repo-status").css("background", colorForStatus(data.status))
+  })
+}
+
+function colorForStatus(status){
+  switch (status) {
+    case "success":
+      return "green"
+    case "failure":
+      return "red"
+    case "running":
+      return "yellow"
+    case "not_run":
+      return "gray"
+    default:
+      return "white"
+  }
 }
 
 function updateConfigDisplay(repo, config){
@@ -84,7 +106,7 @@ function saveJob(repo){
 }
 
 function saveJobClick(el){
-  repo_node = el.parentNode.parentNode.parentNode.parentNode ;
+  repo_node = el.parentNode.parentNode.parentNode.parentNode.parentNode ;
   id = parseInt(repo_node.id.substring(4, repo_node.id.length)) ;
   repo = repos[id] ;
 
@@ -95,6 +117,7 @@ function deleteJob(repo){
   $.post("/delete_job/" + repo.jobName, {}, function(data){
     if(data.status == "success"){
       $("#repo" + repo.id).find(".save-changes").text("Create Job")
+      $("#repo" + repo.id).find(".repo-status").css("background", "white")
       disableRepo(repo)
       syncWithJenkins()
     }
@@ -106,7 +129,7 @@ function deleteJob(repo){
 }
 
 function deleteJobClick(el){
-  repo_node = el.parentNode.parentNode.parentNode.parentNode ;
+  repo_node = el.parentNode.parentNode.parentNode.parentNode.parentNode ;
   id = parseInt(repo_node.id.substring(4, repo_node.id.length)) ;
   repo = repos[id] ;
 
@@ -138,7 +161,7 @@ function configHtml(){
 
 function switchHtml(id, name){
   return name + '<div class="repo" id="repo' + id + '"> \
-    <div class="repo-status"></div> \
+    <a target="_blank" class="repo-status"></a> \
     <div class="onoffswitch"> \
       <input type="checkbox" id="onoffswitch-' + id + '" onclick=toggleRepo(' + id + ') name="onoffswitch" class="onoffswitch-checkbox"> \
       <label class="onoffswitch-label" for="onoffswitch-' + id + '"> \
@@ -149,6 +172,10 @@ function switchHtml(id, name){
     <br/> \
   </div> \
   <br/>'
+}
+
+function setLinkToJob(repo, url) {
+  $("#repo" + repo.id).find(".repo-status").prop("href", url)
 }
 
 function addRepo(repo){
@@ -167,6 +194,8 @@ function syncWithJenkins(){
         r.jobName = jenkins_repo.job_name
         $("#repo" + r.id).find(".save-changes").text("Update Job")
         $("#repo" + r.id).find(".delete-job").prop("disabled", false)
+        updateBuildStatus(r)
+        setLinkToJob(r, jenkins_url + "/job/" + r.jobName)
         if(!$("#onoffswitch-" + r.id).prop("checked"))
           $("#onoffswitch-" + r.id).trigger("click")
       }
