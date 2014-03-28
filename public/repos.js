@@ -19,13 +19,13 @@ function enableRepo(repo){
       $("#repo" + repo.id).find(".save-changes").text("Update Job")
     })
   }
-  div = $("#onoffswitch-" + repo.id).parent().parent().children(".repo-config-box")
-  div.css("display","inline-block")
+  div = $("#onoffswitch-" + repo.id).parent().parent().children(".repo-config-container")
+  div.css("display","inherit")
 
 }
 
 function disableRepo(repo){
-  div = $("#onoffswitch-" + repo.id).parent().parent().children(".repo-config-box")
+  div = $("#onoffswitch-" + repo.id).parent().parent().children(".repo-config-container")
   $("#onoffswitch-" + repo.id).prop("checked", false)
   div.hide()
 }
@@ -114,20 +114,23 @@ function deleteJobClick(el){
 }
 
 function configHtml(){
-  return '<div class="repo-config-box"> \
-            <div class="repo-config"> \
-              <input type="checkbox" class="enable-pullrequest"> \
-              Enable Pull Request builds? \
-              <br/> \
-              <textarea class="build-script" cols="50" rows="15"></textarea> \
-              <br/> \
-              <button type="button" class="refresh-build-script" onclick=retrieveBuildScriptClick(this)>Get Build Script From Repository</button> \
-              <br/> \
-              <div class="save-changes-container"> \
-                <button type="button" class="save-changes" onclick=saveJobClick(this)>Create Job</button> \
-              </div> \
-              <div class="delete-job-container"> \
-                <button type="button" class="delete-job" disabled onclick=deleteJobClick(this)>Delete Job</button> \
+  return '<div class="repo-config-container"> \
+            <br/><br/> \
+            <div class="repo-config-box"> \
+              <div class="repo-config"> \
+                <input type="checkbox" class="enable-pullrequest"> \
+                Enable Pull Request builds? \
+                <br/> \
+                <textarea class="build-script" cols="50" rows="15"></textarea> \
+                <br/> \
+                <button type="button" class="refresh-build-script" onclick=retrieveBuildScriptClick(this)>Get Build Script From Repository</button> \
+                <br/> \
+                <div class="save-changes-container"> \
+                  <button type="button" class="save-changes" onclick=saveJobClick(this)>Create Job</button> \
+                </div> \
+                <div class="delete-job-container"> \
+                  <button type="button" class="delete-job" disabled onclick=deleteJobClick(this)>Delete Job</button> \
+                </div> \
               </div> \
             </div> \
           </div>'
@@ -135,6 +138,7 @@ function configHtml(){
 
 function switchHtml(id, name){
   return name + '<div class="repo" id="repo' + id + '"> \
+    <div class="repo-status"></div> \
     <div class="onoffswitch"> \
       <input type="checkbox" id="onoffswitch-' + id + '" onclick=toggleRepo(' + id + ') name="onoffswitch" class="onoffswitch-checkbox"> \
       <label class="onoffswitch-label" for="onoffswitch-' + id + '"> \
@@ -142,7 +146,9 @@ function switchHtml(id, name){
           <div class="onoffswitch-switch"></div> \
       </label> \
     </div>' + configHtml() + ' \
-  </div>'
+    <br/> \
+  </div> \
+  <br/>'
 }
 
 function addRepo(repo){
