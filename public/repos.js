@@ -84,7 +84,7 @@ function saveJob(repo){
 }
 
 function saveJobClick(el){
-  repo_node = el.parentNode.parentNode.parentNode ;
+  repo_node = el.parentNode.parentNode.parentNode.parentNode ;
   id = parseInt(repo_node.id.substring(4, repo_node.id.length)) ;
   repo = repos[id] ;
 
@@ -106,7 +106,7 @@ function deleteJob(repo){
 }
 
 function deleteJobClick(el){
-  repo_node = el.parentNode.parentNode.parentNode ;
+  repo_node = el.parentNode.parentNode.parentNode.parentNode ;
   id = parseInt(repo_node.id.substring(4, repo_node.id.length)) ;
   repo = repos[id] ;
 
@@ -123,8 +123,12 @@ function configHtml(){
               <br/> \
               <button type="button" class="refresh-build-script" onclick=retrieveBuildScriptClick(this)>Get Build Script From Repository</button> \
               <br/> \
-              <button type="button" class="save-changes" onclick=saveJobClick(this)>Create Job</button> \
-              <button type="button" class="delete-job" disabled onclick=deleteJobClick(this)>Delete Job</button> \
+              <div class="save-changes-container"> \
+                <button type="button" class="save-changes" onclick=saveJobClick(this)>Create Job</button> \
+              </div> \
+              <div class="delete-job-container"> \
+                <button type="button" class="delete-job" disabled onclick=deleteJobClick(this)>Delete Job</button> \
+              </div> \
             </div> \
           </div>'
 }

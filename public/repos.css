@@ -20,14 +20,21 @@
   float: right;
   font-size: 1em;
 }
+.save-changes-container {
+  float: left;
+}
+.delete-job-container {
+  float: right;
+}
 .save-changes {
-  margin-top: 3em;
+  margin-top: 2.5em;
+  margin-bottom: 1em;
   font-size: 1em;
 }
 .delete-job {
-  float: right;
+  margin-top: 1.6em;
+  margin-bottom: 1em;
   font-size: 1em;
-  margin-bottom: 1.5em;
 }
 .enable-pullrequest {
   margin-bottom: 1.5em;
