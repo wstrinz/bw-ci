@@ -1,0 +1,56 @@
+
+<html>
+  <head>
+    <script src='jquery-min.js'></script>
+    <script src='underscore-min.js'></script>
+    <script src='handlebars.js'></script>
+    <script src='bootstrap.min.js'></script>
+    <script src='ember.js'></script>
+    <script src='ember-data.js'></script>
+    <script src='app.js'></script>
+    <link rel='stylesheet' href='bootstrap.min.css' />
+    <link rel='stylesheet' href='bootstrap-theme.min.css' />
+  </head>
+  <body>
+    <h1> Hello! </h1>
+
+    <script type='text/x-handlebars' data-template-name='application'>
+      <div class='navbar navbar-default'>
+        <div class='container'>
+        </div>
+      </div>
+      <div>
+        {{outlet}}
+      </div>
+      <footer>
+        <hr />
+        <p class='pull-left'>bw-ci</p>
+        <p class='pull-right'>github link goes here</p>
+      </footer>
+    </script>
+
+    <script type='text/x-handlebars' data-template-name='index'>
+      <h3>Hallo!</h3>
+      <p>{{message}}</p>
+      <p>
+        {{#link-to 'repos'}}Repositories{{/link-to}}
+      </p>
+    </script>
+
+    <script type='text/x-handlebars' data-template-name='repos'>
+      <div class='row'>
+        <div class='col-sm-3'>
+          <div class='list-group'>
+            <li class='list-group-item'>
+              Something
+            </li>
+          </div>
+        </div>
+        <div class='col-sm-9'>
+          Hooray!
+          {{outlet}}
+        </div>
+      </div>
+    </script>
+  </body>
+</html>

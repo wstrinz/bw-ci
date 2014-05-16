@@ -1,7 +1,7 @@
 
 require_relative 'spec_helper'
 
-describe JenkinsHelper do
+describe JenkinsHelper, :vcr do
   describe ".github_repo" do
     it "returns repo data" do
       expect(JenkinsHelper.github_repo("Poopdeck")[:name]).to eq("bw_poopdeck")
@@ -21,7 +21,16 @@ describe JenkinsHelper do
   end
 
   describe ".build_config" do
-    let(:expected) { "rvm use 2.0.0\ncp config/credentials.yml.example config/credentials.yml\ncp config/database.yml.example config/database.yml\nbundle\nbundle exec rake" }
+    let(:expected) { <<-EOF
+rvm use 2.0.0
+cp config/credentials.yml.example config/credentials.yml
+cp config/database.yml.example config/database.yml
+bundle
+bundle exec rake db:drop db:create db:migrate
+bundle exec rake
+    EOF
+    .send(:[], 0..-2)
+    }
     it "returns build_config for a given job" do
       JenkinsHelper.build_config("Poopdeck").should == expected
     end

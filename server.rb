@@ -12,7 +12,7 @@ require_relative 'jenkins_helper.rb'
 
 helpers do
   def sample_repos
-    JSON.parse(IO.read('dev_data/repos.json'))
+    JSON.parse IO.read('dev_data/repos.json')
   end
 
   def sample_oauth
@@ -57,7 +57,7 @@ helpers do
   end
 
   def enable_job(options)
-    JenkinsHelper.create_or_update_job(JSON.parse(options))
+    JenkinsHelper.create_or_update_job JSON.parse(options)
   end
 
   def delete_job(job)
@@ -73,7 +73,7 @@ helpers do
   end
 
   def build_status(job)
-    {status: JenkinsHelper.client.job.get_current_build_status(job)}
+    { status: JenkinsHelper.client.job.get_current_build_status(job) }
   end
 
   def authenticated?
@@ -104,10 +104,12 @@ configure do
   if production?
     use Rack::SslEnforcer
   end
+
   use OmniAuth::Builder do
     user_scopes = 'user,repo,read:repo_hook,write:repo_hook,admin:repo_hook,read:org'
     provider :github, ENV['GITHUB_KEY'], ENV['GITHUB_SECRET'], scope: user_scopes
   end
+
   enable :sessions
   set :session_secret, ENV['SESSION_SECRET']
 end
@@ -116,7 +118,8 @@ get '/' do
   if authenticated?
     @build_script = "rake"
     @user = session[:auth_hash]["info"]["nickname"]
-    haml :repos
+    # haml :repos
+    send_file File.expand_path('ember.html', 'views')
   else
     haml :login
   end
