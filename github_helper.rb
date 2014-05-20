@@ -35,12 +35,14 @@ class GithubHelper
         user_repos.map{ |r|
           { name: r.name,
             owner: r.owner.login,
+            id: r.full_name,
             url: "https://github.com/#{r.full_name}/" }
         }.sort_by{|r| r[:name].downcase},
 
         org_repos.map{|r|
           { name: r.name,
             owner: r.owner.login,
+            id: r.full_name,
             url: "https://github.com/#{r.full_name}/" }
         }.sort_by{|r| r[:name].downcase},
       ].flatten
