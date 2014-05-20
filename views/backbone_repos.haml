@@ -1,0 +1,7 @@
+%script{src: 'backbone_app.js', type: 'text/javascript'}
+%link{:rel => :stylesheet, :type => :"text/css", :href => "backbone_repos.css"}
+
+%h3 Backbone Repositories for #{@user}
+%button{:class => "show-hide-repos", onclick: "showHideRepos()"} Show/Hide Inactive Repos
+.repos-container
+  #repo-list

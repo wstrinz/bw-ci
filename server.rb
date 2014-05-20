@@ -116,7 +116,8 @@ get '/' do
   if authenticated?
     @build_script = "rake"
     @user = session[:auth_hash]["info"]["nickname"]
-    haml :repos
+    #haml :repos
+    haml :backbone_repos
   else
     haml :login
   end
