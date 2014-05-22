@@ -1,11 +1,12 @@
 %html
   %head
-    %script{src: 'jquery.js', type: 'text/javascript'}
-    %script{src: 'json2.js', type: 'text/javascript'}
-    %script{src: 'underscore.js', type: 'text/javascript'}
-    %script{src: 'backbone.js', type: 'text/javascript'}
-    %script{src: 'backbone.marionette.js', type: 'text/javascript'}
-    %script{src: 'backbone.babysitter.js', type: 'text/javascript'}
-    %script{src: 'backbone.wreqr.js', type: 'text/javascript'}
+    /%script{src: 'jquery.js', type: 'text/javascript'}
+    /%script{src: 'json2.js', type: 'text/javascript'}
+    /%script{src: 'underscore.js', type: 'text/javascript'}
+    /%script{src: 'backbone.js', type: 'text/javascript'}
+    /%script{src: 'backbone.marionette.js', type: 'text/javascript'}
+    /%script{src: 'backbone.babysitter.js', type: 'text/javascript'}
+    /%script{src: 'backbone.wreqr.js', type: 'text/javascript'}
+    %script{src: 'javascripts/lib/require.js', :'data-main' => 'javascripts/app'}
   %body
     = yield

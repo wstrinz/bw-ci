@@ -1,0 +1,2 @@
+Job = Backbone.Model.extend({
+})

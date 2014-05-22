@@ -1,0 +1,2 @@
+Repository = Backbone.Model.extend({
+})
