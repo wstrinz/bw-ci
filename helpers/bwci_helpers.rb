@@ -1,8 +1,6 @@
 module BWCIHelpers
   def ensure_authenticated
-    unless authenticated?
-      authenticate!
-    end
+    authenticate! unless authenticated?
   end
 
   def authenticate!
@@ -42,33 +40,6 @@ module BWCIHelpers
 
   def repos(info_hash)
     GithubHelper.repos(info_hash)
-  end
-  def jenkins_repos
-    JenkinsHelper.jenkins_repos
-  end
-
-  def job_config(job)
-    JenkinsHelper.job_config(job)
-  end
-
-  def enable_job(options)
-    JenkinsHelper.create_or_update_job(JSON.parse(options))
-  end
-
-  def delete_job(job)
-    JenkinsHelper.delete_job(job)
-  end
-
-  def build_job(job)
-    JenkinsHelper.client.job.build(job)
-  end
-
-  def disable_job(job)
-    JenkinsHelper.client.job.disable(job)
-  end
-
-  def build_status(job)
-    {status: JenkinsHelper.client.job.get_current_build_status(job)}
   end
 
   def test_config(info_hash, user, repo)

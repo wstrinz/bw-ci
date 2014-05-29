@@ -16,12 +16,12 @@ require_relative 'controllers/authorization_controller'
 require_relative 'controllers/jobs_controller'
 
 class BWCI < Sinatra::Application
+
   use AuthorizationController
   use RepositoriesController
   use JobsController
 
   helpers BWCIHelpers
-
 
   configure do
     if production?
@@ -39,7 +39,6 @@ class BWCI < Sinatra::Application
     if authenticated?
       @build_script = "rake"
       @user = session[:auth_hash]["info"]["nickname"]
-      #haml :repos
       haml :backbone_repos
     else
       haml :login

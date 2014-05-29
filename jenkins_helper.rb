@@ -11,6 +11,10 @@ class JenkinsHelper
       @client
     end
 
+    def build_status(job)
+      { status: client.job.get_current_build_status(job) }
+    end
+
     def github_repo(job)
       cfg = Hash.from_xml(client.job.get_config(job))
 
@@ -28,6 +32,18 @@ class JenkinsHelper
       doc = Nokogiri::XML(client.job.get_config(job))
       script = doc.at_css("builders").at_css("command").children.first.text
       script.sub(JenkinsConfig.script_boilerplate,"")
+    end
+
+    def build_job(job)
+      JenkinsHelper.client.job.build(job)
+    end
+
+    def enable_job(options)
+      JenkinsHelper.create_or_update_job(JSON.parse(options))
+    end
+
+    def disable_job(job)
+      JenkinsHelper.client.job.disable(job)
     end
 
     def job_exists?(job)
