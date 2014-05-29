@@ -12,8 +12,12 @@ gem 'thin'
 gem 'rack-ssl-enforcer'
 
 group :test do
-  gem "vcr"
-  gem "rspec"
-  gem "rack-test"
-  gem "webmock"
+  gem 'vcr'
+  gem 'rspec'
+  gem 'rack-test'
+  gem 'webmock'
+end
+
+group :development do
+  gem 'pry'
 end
