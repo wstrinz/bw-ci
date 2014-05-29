@@ -1,5 +1,16 @@
 %html
   %head
-    %script{src: 'javascripts/lib/requirejs/require.js', :'data-main' => 'javascripts/app'}
+    /%script{src: 'javascripts/lib/requirejs/require.js', :'data-main' => 'javascripts/app'}
+    %script{src: 'javascripts/lib/underscore/underscore.js' }
+    %script{src: 'javascripts/lib/jquery/dist/jquery.js'}
+    %script{src: 'javascripts/lib/json2/json2.js'}
+    %script{src: 'javascripts/lib/backbone/backbone.js'}
+    %script{src: 'javascripts/models/job.js'}
+    %script{src: 'javascripts/models/repository.js'}
+    %script{src: 'javascripts/models/repositories.js'}
+    %script{src: 'javascripts/views/repository_view.js'}
+    %script{src: 'javascripts/views/repositories_view.js'}
+    %script{src: 'javascripts/router.js'}
+    %script{src: 'javascripts/app.js'}
   %body
     = yield
