@@ -6,16 +6,22 @@ require 'omniauth'
 require 'omniauth-github'
 require 'rack/ssl-enforcer'
 
-require_relative 'github_helper.rb'
-require_relative 'jenkins_helper.rb'
+require_relative 'github_helper'
+require_relative 'jenkins_helper'
+
+require_relative 'helpers/bwci_helpers'
+
 require_relative 'controllers/repositories_controller'
 require_relative 'controllers/authorization_controller'
 require_relative 'controllers/jobs_controller'
 
 class BWCI < Sinatra::Application
-  include RepositoriesController
-  include AuthorizationController
-  include JobsController
+  use AuthorizationController
+  use RepositoriesController
+  use JobsController
+
+  helpers BWCIHelpers
+
 
   configure do
     if production?
@@ -42,4 +48,3 @@ class BWCI < Sinatra::Application
 
   run! if $0 == app_file
 end
-

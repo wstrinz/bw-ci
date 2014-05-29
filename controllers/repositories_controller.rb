@@ -1,27 +1,12 @@
-module RepositoriesController
-  def self.included(base)
-    base.extend ClassMethods
-    base.add_routes
-  end
+require './server'
 
-  module ClassMethods
-    def add_routes
-      helpers do
-        def sample_repos
-          JSON.parse(IO.read('dev_data/repos.json'))
-        end
+class RepositoriesController < Sinatra::Base
+  helpers BWCIHelpers
 
-        def repos(info_hash)
-          GithubHelper.repos(info_hash)
-        end
-      end
-
-      get '/repositories' do
-        ensure_authenticated
-        content_type :json
-        repos(session[:auth_hash]).to_json
-      end
-    end
+  get '/repositories' do
+    ensure_authenticated
+    content_type :json
+    repos(session[:auth_hash]).to_json
   end
 end
 
