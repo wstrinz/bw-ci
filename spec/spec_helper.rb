@@ -7,7 +7,7 @@ require 'rack/test'
 include Rack::Test::Methods
 
 def app
-  Sinatra::Application
+  BWCI
 end
 
 def create_test_job(options = {})

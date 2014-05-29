@@ -21,7 +21,7 @@ describe JenkinsHelper do
   end
 
   describe ".build_config" do
-    let(:expected) { "rvm use 2.0.0\ncp config/credentials.yml.example config/credentials.yml\ncp config/database.yml.example config/database.yml\nbundle\nbundle exec rake" }
+    let(:expected) { "rvm use 2.0.0\ncp config/credentials.yml.example config/credentials.yml\ncp config/database.yml.example config/database.yml\nbundle\nbundle exec rake db:drop db:create db:migrate\nbundle exec rake" }
     it "returns build_config for a given job" do
       JenkinsHelper.build_config("Poopdeck").should == expected
     end
