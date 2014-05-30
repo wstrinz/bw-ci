@@ -1,6 +1,16 @@
 //%script{src: 'backbone_app.js', type: 'text/javascript'}
 %link{:rel => :stylesheet, :type => :"text/css", :href => "backbone_repos.css"}
 
-%h3 Repositories for #{@user}
-%button{:class => "show-hide-repos", onclick: "showHideRepos()"} Show/Hide Inactive Repos
-#app
+.navbar.navbar-inverse.navbar-fixed-top
+  .navbar-inner
+    .container
+      %span{:class => 'navbar-brand'}
+        Repositories for #{@user}
+
+/%button{:class => "show-hide-repos", onclick: "showHideRepos()"} Show/Hide Inactive Repos
+.container-fluid
+  .row
+    .col-sm-3.col-md-2.sidebar#sidebar
+    .col-sm-9.col-sm-offset-3.col-md-10.col-md-offset-2#app
+      #repository-detail
+      #job-detail

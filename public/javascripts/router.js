@@ -5,31 +5,50 @@ CIApp = new Backbone.Marionette.Application({
 });
 
 CIApp.addRegions({
-  mainRegion: '#app'
+  repositoryDetailRegion: '#repository-detail',
+  jobDetailRegion: '#job-detail',
+  reposListRegion: '#sidebar'
 })
+
+CIApp.addInitializer(function(options){
+  CIApp.Router = new CIRouter(options);
+});
 
 CIApp.addInitializer(function(options){
   var reposView = new RepositoriesView({
     collection: options.repos
   });
-  CIApp.mainRegion.show(reposView);
+  CIApp.reposListRegion.show(reposView);
 });
 
-CIApp.Router = Backbone.Marionette.AppRouter.extend({
- //routes: {'': 'index'},
+CIApp.addInitializer(function(options){
+  Backbone.history.start({pushState: true})
+});
 
- //initialize: function(){
- //  this.repositories = new Repositories();
- //  this.reposView = new RepositoriesView({collection: this.repositories});
- //  this.reposView.render()
- //},
+var CIRouter = Backbone.Marionette.AppRouter.extend({
+ routes: {
+   '': 'index',
+   ':user/:repo': 'repoDetail'
+ },
+
+ initialize: function(options){
+   this.repositories = options.repos;
+ },
 
 
- //index: function(){
- //  console.log('in index')
- //  this.repositories.fetch({parse: true})
- //  $('#app').html(this.reposView.el)
- //},
+ index: function(){
+   console.log('in index');
+
+   this.repositories.fetch({parse: true});
+ },
+
+ repoDetail: function(user, repo){
+   console.log('repodetail')
+   var repoDetailView = new RepositoryDetailView({model: new Repository({id: 'user/repo', name: 'repo'})});
+   var jobDetailView = new JobView({model: new Job({id: 'JeninksID', job_name: 'A job name'})});
+   CIApp.repositoryDetailRegion.show(repoDetailView);
+   CIApp.jobDetailRegion.show(jobDetailView);
+ }
 
  //show: function(id){
  //  //show repo

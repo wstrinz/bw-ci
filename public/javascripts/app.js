@@ -20,8 +20,7 @@
 //
 var opts = {
   repos: new Repositories([
-    {name: 'test repo 1'},
-    {name: 'test repo 2'}
+    {name: 'test-repo-1', id: 'user/test-repo-1'}
   ])
 }
 $(function(){ CIApp.start(opts) })
