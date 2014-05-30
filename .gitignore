@@ -1,5 +1,5 @@
 dev_data/*
 spec/cassettes/*
 .bundle/*
-public/javascripts/lib/*
+public/vendor
 tags

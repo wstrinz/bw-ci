@@ -1,14 +1,18 @@
 %html
   %head
     /%script{src: 'javascripts/lib/requirejs/require.js', :'data-main' => 'javascripts/app'}
-    %script{src: 'javascripts/lib/underscore/underscore.js' }
-    %script{src: 'javascripts/lib/jquery/dist/jquery.js'}
-    %script{src: 'javascripts/lib/json2/json2.js'}
+    %script{src: 'vendor/underscore/underscore.js' }
+    %script{src: 'vendor/jquery/dist/jquery.js'}
+    %script{src: 'vendor/json2/json2.js'}
 
-    %script{src: 'javascripts/lib/backbone/backbone.js'}
-    %script{src: 'javascripts/lib/backbone.wreqr/lib/backbone.wreqr.js'}
-    %script{src: 'javascripts/lib/backbone.babysitter/lib/backbone.babysitter.js'}
-    %script{src: 'javascripts/lib/marionette/lib/backbone.marionette.js'}
+    %script{src: 'vendor/backbone/backbone.js'}
+    %script{src: 'vendor/backbone.wreqr/lib/backbone.wreqr.js'}
+    %script{src: 'vendor/backbone.babysitter/lib/backbone.babysitter.js'}
+    %script{src: 'vendor/marionette/lib/backbone.marionette.js'}
+
+    %link{:rel => :stylesheet, :type => :"text/css", :href => "vendor/bootstrap/dist/css/bootstrap.css"}
+    %link{:rel => :stylesheet, :type => :"text/css", :href => "vendor/bootstrap/dist/css/bootstrap-theme.css"}
+    %link{:rel => :stylesheet, :type => :"text/css", :href => "vendor/bootstrap/dist/js/bootstrap.js"}
 
     %script{src: 'javascripts/models/job.js'}
     %script{src: 'javascripts/models/repository.js'}
