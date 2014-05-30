@@ -1,5 +1,3 @@
-require './server'
-
 class RepositoriesController < Sinatra::Base
   helpers BWCIHelpers
 

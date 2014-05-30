@@ -1,25 +1,37 @@
-//CIApp = new Backbone.Marionette.Application();
+CIApp = new Backbone.Marionette.Application({
+ //start: function(){
+ //  Backbone.history.start({pushState: true})
+ //},
+});
 
-CIApp = new (Backbone.Router.extend({
-  routes: {'': 'index'},
+CIApp.addRegions({
+  mainRegion: '#app'
+})
 
-  initialize: function(){
-    this.repositories = new Repositories();
-    this.reposView = new RepositoriesView({collection: this.repositories});
-    this.reposView.render()
-  },
+CIApp.addInitializer(function(options){
+  var reposView = new RepositoriesView({
+    collection: options.repos
+  });
+  CIApp.mainRegion.show(reposView);
+});
 
-  start: function(){
-    Backbone.history.start({pushState: true})
-  },
+CIApp.Router = Backbone.Marionette.AppRouter.extend({
+ //routes: {'': 'index'},
 
-  index: function(){
-    console.log('in index')
-    this.repositories.fetch({parse: true})
-    $('#app').html(this.reposView.el)
-  },
+ //initialize: function(){
+ //  this.repositories = new Repositories();
+ //  this.reposView = new RepositoriesView({collection: this.repositories});
+ //  this.reposView.render()
+ //},
 
-  show: function(id){
-    //show repo
-  }
-}))
+
+ //index: function(){
+ //  console.log('in index')
+ //  this.repositories.fetch({parse: true})
+ //  $('#app').html(this.reposView.el)
+ //},
+
+ //show: function(id){
+ //  //show repo
+ //}
+})

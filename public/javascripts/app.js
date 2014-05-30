@@ -17,4 +17,11 @@
 // require(libs, function (foo) {
 //   console.log('requires done')
 // });
-$(function(){ CIApp.start() })
+//
+var opts = {
+  repos: new Repositories([
+    {name: 'test repo 1'},
+    {name: 'test repo 2'}
+  ])
+}
+$(function(){ CIApp.start(opts) })
