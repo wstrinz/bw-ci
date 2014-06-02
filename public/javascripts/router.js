@@ -1,7 +1,7 @@
 CIApp = new Backbone.Marionette.Application({
- //start: function(){
- //  Backbone.history.start({pushState: true})
- //},
+  //start: function(){
+  //  Backbone.history.start({pushState: true})
+  //},
 });
 
 CIApp.addRegions({
@@ -25,34 +25,45 @@ CIApp.addInitializer(function(options){
   Backbone.history.start({pushState: true})
 });
 
-CIApp.addInitializer(function(options){
-  this.repositories.fetch({parse: true});
-});
-
 var CIRouter = Backbone.Marionette.AppRouter.extend({
- routes: {
-   '': 'index',
-   ':user/:repo': 'repoDetail'
- },
+  routes: {
+    '': 'index',
+    ':user/:repo': 'repoDetail'
+  },
 
- initialize: function(options){
-   this.repositories = options.repos;
- },
+  initialize: function(options){
+    this.repositories = options.repos;
+    this.repositories.fetch({parse: true});
+  },
 
 
- index: function(){
-   console.log('in index');
- },
+  index: function(){
+    console.log('in index');
+  },
 
- repoDetail: function(user, repo){
-   console.log('repodetail')
-   var repoDetailView = new RepositoryDetailView({model: new Repository({id: 'user/repo', name: 'repo'})});
-   var jobDetailView = new JobView({model: new Job({id: 'JeninksID', job_name: 'A job name'})});
-   CIApp.repositoryDetailRegion.show(repoDetailView);
-   CIApp.jobDetailRegion.show(jobDetailView);
- }
+  repoDetail: function(user, repo){
+    var doRender = function(model){
+      repoDetailView = new RepositoryDetailView({model: model});
+      var jobDetailView = new JobView({model: new Job({id: 'JeninksID', job_name: 'A job name'})});
+      CIApp.repositoryDetailRegion.show(repoDetailView);
+      CIApp.jobDetailRegion.show(jobDetailView);
+    }
 
- //show: function(id){
- //  //show repo
- //}
+    var renderAfterSync = function(context){
+      context.listenToOnce(context.repositories, 'sync', function(){
+        var model = context.repositories.get(user + '/' + repo)
+        doRender(model)
+      })
+    }
+
+    var model = this.repositories.get(user + '/' + repo)
+    if(model)
+      doRender(model)
+    else
+      renderAfterSync(this)
+  }
+
+  //show: function(id){
+  //  //show repo
+  //}
 })
