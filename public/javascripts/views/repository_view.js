@@ -1,5 +1,5 @@
 RepositoryView = Backbone.Marionette.ItemView.extend({
-  template: _.template('<a href="<%= id %>"><%= name %></a>'),
+  template: Handlebars.compile('<a href="{{id}}">{{name}}</a>'),
   tagName: 'li',
   className: 'repository',
 

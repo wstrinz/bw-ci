@@ -1,3 +1,3 @@
 JobView = Backbone.Marionette.ItemView.extend({
-  template: _.template('<h1>Job</h1><p><%= job_name %></p>')
+  template: Handlebars.compile('<h1>Job</h1><p>{{job_name}}</p>')
 })

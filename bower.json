@@ -20,6 +20,7 @@
     "jquery": "~2.1.1",
     "json2": "*",
     "bootstrap": "~3.1.1",
-    "marionette": "~1.8.6"
+    "marionette": "~1.8.6",
+    "handlebars": "~1.3.0"
   }
 }
