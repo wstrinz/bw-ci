@@ -1,7 +1,11 @@
 #app {
-  padding-top: 50px
+  padding-top: 50px;
+  overflow-y: scroll;
+  max-height: 100%;
 }
 
 #sidebar {
-  padding-top: 50px
+  padding-top: 50px;
+  overflow-y: scroll;
+  max-height: 100%;
 }
