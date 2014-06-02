@@ -25,6 +25,10 @@ CIApp.addInitializer(function(options){
   Backbone.history.start({pushState: true})
 });
 
+CIApp.addInitializer(function(options){
+  this.repositories.fetch({parse: true});
+});
+
 var CIRouter = Backbone.Marionette.AppRouter.extend({
  routes: {
    '': 'index',
@@ -38,8 +42,6 @@ var CIRouter = Backbone.Marionette.AppRouter.extend({
 
  index: function(){
    console.log('in index');
-
-   this.repositories.fetch({parse: true});
  },
 
  repoDetail: function(user, repo){

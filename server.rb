@@ -36,13 +36,12 @@ class BWCI < Sinatra::Application
   end
 
   get '/' do
-    if authenticated?
-      @build_script = "rake"
-      @user = session[:auth_hash]["info"]["nickname"]
-      haml :backbone_repos
-    else
-      haml :login
-    end
+    render_app_if_authenticated
+  end
+
+  get '*' do
+    puts "fallthrough route"
+    render_app_if_authenticated
   end
 
   run! if $0 == app_file

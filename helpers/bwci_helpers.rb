@@ -16,6 +16,16 @@ module BWCIHelpers
     session[:authenticated]
   end
 
+  def render_app_if_authenticated
+    if authenticated?
+      @build_script = "rake"
+      @user = session[:auth_hash]["info"]["nickname"]
+      haml :backbone_repos
+    else
+      haml :login
+    end
+  end
+
   def sample_oauth
     if File.exist? "dev_data/oauth_token"
       IO.read('dev_data/oauth_token').strip
