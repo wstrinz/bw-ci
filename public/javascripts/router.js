@@ -33,7 +33,9 @@ var CIRouter = Backbone.Marionette.AppRouter.extend({
 
   initialize: function(options){
     this.repositories = options.repos;
+    this.jobs = new Jobs()
     this.repositories.fetch({parse: true});
+    this.jobs.fetch({parse: true});
   },
 
 
@@ -42,25 +44,41 @@ var CIRouter = Backbone.Marionette.AppRouter.extend({
   },
 
   repoDetail: function(user, repo){
-    var doRender = function(model){
-      repoDetailView = new RepositoryDetailView({model: model});
-      var jobDetailView = new JobView({model: new Job({id: 'JeninksID', job_name: 'A job name'})});
+    var renderRepo = function(model){
+      var repoDetailView = new RepositoryDetailView({model: model});
       CIApp.repositoryDetailRegion.show(repoDetailView);
+    }
+
+    var renderJob = function(model){
+      var jobDetailView = new JobView({model: model});
       CIApp.jobDetailRegion.show(jobDetailView);
     }
 
-    var renderAfterSync = function(context){
+    var renderRepoAfterSync = function(context){
       context.listenToOnce(context.repositories, 'sync', function(){
         var model = context.repositories.get(user + '/' + repo)
-        doRender(model)
+        renderRepo(model)
       })
     }
 
-    var model = this.repositories.get(user + '/' + repo)
-    if(model)
-      doRender(model)
-    else
-      renderAfterSync(this)
+    var renderJobAfterSync = function(context){
+      context.listenToOnce(context.jobs, 'sync', function(){
+        var model = context.jobs.where({github_repo: user + '/' + repo})[0]
+        renderJob(model)
+      })
+    }
+
+    var repoModel = this.repositories.get(user + '/' + repo)
+    var jobModel = this.jobs.where({github_repo: user + '/' + repo})[0]
+
+    if(repoModel){
+      renderRepo(repoModel)
+      renderJob(jobModel)
+    }
+    else{
+      renderRepoAfterSync(this)
+      renderJobAfterSync(this)
+    }
   }
 
   //show: function(id){
