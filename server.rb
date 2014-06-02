@@ -20,6 +20,7 @@ class BWCI < Sinatra::Application
   use AuthorizationController
   use RepositoriesController
   use JobsController
+  use Rack::Logger
 
   helpers BWCIHelpers
 
@@ -40,7 +41,7 @@ class BWCI < Sinatra::Application
   end
 
   get '*' do
-    puts "fallthrough route"
+    request.logger.info "fallthrough route"
     render_app_if_authenticated
   end
 

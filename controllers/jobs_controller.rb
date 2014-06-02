@@ -5,11 +5,6 @@ class JobsController < Sinatra::Application
     ensure_authenticated
   end
 
-  get '/enabled_repositories' do
-    content_type :json
-    JenkinsHelper.jenkins_repos.to_json
-  end
-
   get '/test_config/:user/:repo' do
     content_type :json
     test_config(session[:auth_hash], params[:user], params[:repo]).to_json
@@ -28,6 +23,10 @@ class JobsController < Sinatra::Application
   get '/jenkins_url' do
     content_type :json
     { url: ENV["JENKINS_URL"] }.to_json
+  end
+
+  get '/jobs' do
+    JenkinsHelper.jobs.to_json
   end
 
   post '/enable_job' do

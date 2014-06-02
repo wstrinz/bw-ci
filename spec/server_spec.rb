@@ -46,24 +46,12 @@ describe "bw-ci app" do
     end
   end
 
-  describe '/enabled_repositories', :vcr do
-    let(:expected_repos) { [{ "job_name"   => "Poopdeck",
-                              "user"       => "bendyworks",
-                              "name"       => "bw_poopdeck",
-                              "url"        => "https://github.com/bendyworks/bw_poopdeck/" }] }
-
-    it "retrieves known repos from jenkins" do
-      get "/enabled_repositories"
-      expect(last_response).to be_ok
-      expect(JSON.parse(last_response.body)).to eq(expected_repos)
-    end
-  end
-
   describe '/job_config', :vcr do
-    let(:expected_config) { { job_name:             "Poopdeck",
-                              github_repo:          "git@github.com:bendyworks/bw_poopdeck.git",
-                              build_script:         JenkinsHelper.build_config("Poopdeck"),
-                              enable_pullrequests:  true } }
+    let(:expected_config) { { job_name:             'Poopdeck',
+                              github_repo:          'git@github.com:bendyworks/bw_poopdeck.git',
+                              build_script:         JenkinsHelper.build_config('Poopdeck'),
+                              enable_pullrequests:  true,
+                              build_status:         'success' } }
 
     it 'retrieves project config as json' do
       get "/job_config/Poopdeck"
@@ -139,7 +127,7 @@ describe "bw-ci app" do
       post "/delete_job/#{@job_name}"
       expect(last_response.status).to eq(200)
 
-      get '/enabled_repositories'
+      get '/jobs'
       job_exists = JSON.parse(last_response.body).any?{|r| r["job_name"] == @job_name}
       expect(job_exists).to be_false
     end
@@ -161,13 +149,6 @@ describe "bw-ci app" do
 
       # TODO: figure out a way to check this that doesn't slow down tests
       # expect(JenkinsHelper.client.job.get_current_build_number(@job_name)).to eq(1)
-    end
-  end
-
-  describe "/build_status" do
-    it "returns project build status" do
-      get "/build_status/Poopdeck"
-      expect(last_response.body).to eq({status: "success"}.to_json)
     end
   end
 end

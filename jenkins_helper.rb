@@ -11,8 +11,8 @@ class JenkinsHelper
       @client
     end
 
-    def build_status(job)
-      { status: client.job.get_current_build_status(job) }
+    def jobs
+      client.job.list_all.map{|j| job_config(j)}
     end
 
     def github_repo(job)
@@ -57,6 +57,7 @@ class JenkinsHelper
       %i{github_repo build_script enable_pullrequests}.each do |attribute|
         cfg_hash[attribute] = cfg.send(attribute)
       end
+      cfg_hash[:build_status] = client.job.get_current_build_status(job)
 
       cfg_hash
     end
@@ -178,7 +179,12 @@ EOF
   end
 
   def github_repo
-    @config_document.at_css("userRemoteConfigs").at_css("url").text
+    cfgs = @config_document.at_css("userRemoteConfigs")
+    if cfgs
+      cfgs.at_css("url").try(:text)
+    else
+      nil
+    end
   end
 
   def project_url=(url)
@@ -193,29 +199,35 @@ EOF
   def enable_pullrequests=(enable)
     @enable_pullrequests = enable
     remote_config = @config_document.at_css("userRemoteConfigs")
-    pr_node = remote_config.children.find { |c| c.at_css("refspec") && c.at_css("refspec").text == "+refs/pull/*:refs/remotes/origin/pr/*" }
+    if remote_config
+      pr_node = remote_config.children.find { |c| c.at_css("refspec") && c.at_css("refspec").text == "+refs/pull/*:refs/remotes/origin/pr/*" }
 
-    if enable
-      unless pr_node
-        node_xml = <<-EOF
+      if enable
+        unless pr_node
+          node_xml = <<-EOF
 <hudson.plugins.git.UserRemoteConfig>
   <name>pr</name>
   <refspec>+refs/pull/*:refs/remotes/origin/pr/*</refspec>
   <url>#{github_repo}</url>
   <credentialsId>7f705fde-c469-4657-974e-6bd1d5cdcaf2</credentialsId>
 </hudson.plugins.git.UserRemoteConfig>
-        EOF
+          EOF
 
-        remote_config.add_child Nokogiri::XML(node_xml).elements.first
+          remote_config.add_child Nokogiri::XML(node_xml).elements.first
+        end
+      else
+        pr_node.remove if pr_node
       end
-    else
-      pr_node.remove if pr_node
     end
   end
 
   def enable_pullrequests
     remote_config = @config_document.at_css("userRemoteConfigs")
-    remote_config.children.any? { |c| c.at_css("refspec") && c.at_css("refspec").text == "+refs/pull/*:refs/remotes/origin/pr/*" }
+    if remote_config
+      remote_config.children.any? { |c| c.at_css("refspec") && c.at_css("refspec").text == "+refs/pull/*:refs/remotes/origin/pr/*" }
+    else
+      false
+    end
   end
 
   def build_script=(script)

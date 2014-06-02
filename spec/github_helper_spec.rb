@@ -11,7 +11,7 @@ describe GithubHelper do
 
   describe ".add_deploy_key" do
     it "adds deploy key to repo" do
-      pending
+      pending "not implemented"
       result = GithubHelper.add_deploy_key(credentials, repo, "jenkins_key_test", jenkins_key)
       expect(result).to eq("asdfa")
     end
